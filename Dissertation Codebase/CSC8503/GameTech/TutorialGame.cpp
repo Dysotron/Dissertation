@@ -338,6 +338,9 @@ void TutorialGame::InitWorld()
 {
 	world->ClearAndErase();
 	physics->Clear();
+
+	AddSphereToWorld(Vector3(100, 0, 0), 10);
+	AddPlanetToWorld();
 }
 
 //From here on it's functions to add in objects to the world!
@@ -358,6 +361,28 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+
+	world->AddGameObject(sphere);
+
+	return sphere;
+}
+
+GameObject* TutorialGame::AddPlanetToWorld()
+{
+	GameObject* sphere = new GameObject();
+
+	Vector3 sphereSize = Vector3(10,10,10);
+	SphereVolume* volume = new SphereVolume(10);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+	sphere->GetTransform().SetWorldScale(sphereSize);
+	sphere->GetTransform().SetWorldPosition(Vector3(0,0,0));
+
+	//sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+	sphere->SetRenderObject(NULL);
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+	sphere->GetPhysicsObject()->SetInverseMass(0);
 	sphere->GetPhysicsObject()->InitSphereInertia();
 
 	world->AddGameObject(sphere);

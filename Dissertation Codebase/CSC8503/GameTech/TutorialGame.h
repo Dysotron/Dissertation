@@ -30,6 +30,7 @@ namespace NCL
 			void LockedCameraMovement();
 
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
+			GameObject* AddPlanetToWorld();
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;
