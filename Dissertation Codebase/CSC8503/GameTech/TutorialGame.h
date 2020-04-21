@@ -3,9 +3,12 @@
 #include "../CSC8503Common/PhysicsSystem.h"
 
 
-namespace NCL {
-	namespace CSC8503 {
-		class TutorialGame		{
+namespace NCL
+{
+	namespace CSC8503
+	{
+		class TutorialGame
+		{
 		public:
 			TutorialGame();
 			~TutorialGame();
@@ -28,9 +31,9 @@ namespace NCL {
 
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
 
-			GameTechRenderer*	renderer;
-			PhysicsSystem*		physics;
-			GameWorld*			world;
+			GameTechRenderer* renderer;
+			PhysicsSystem* physics;
+			GameWorld* world;
 
 			bool useGravity;
 			bool inSelectionMode;
@@ -39,14 +42,15 @@ namespace NCL {
 
 			GameObject* selectionObject = nullptr;
 
-			OGLMesh*	sphereMesh	= nullptr;
-			OGLTexture* basicTex	= nullptr;
-			OGLShader*	basicShader = nullptr;
+			OGLMesh* sphereMesh = nullptr;
+			OGLTexture* basicTex = nullptr;
+			OGLShader* basicShader = nullptr;
 
 			//Coursework Additional functionality	
-			GameObject* lockedObject	= nullptr;
-			Vector3 lockedOffset		= Vector3(0, 14, 20);
-			void LockCameraToObject(GameObject* o) {
+			GameObject* lockedObject = nullptr;
+			Vector3 lockedOffset = Vector3(0, 14, 20);
+			void LockCameraToObject(GameObject* o)
+			{
 				lockedObject = o;
 			}
 		};
