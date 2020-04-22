@@ -390,6 +390,11 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	return sphere;
 }
 
+RenderObject* CreatePlanetRenderObject()
+{
+
+}
+
 
 
 

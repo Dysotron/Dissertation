@@ -31,6 +31,7 @@ namespace NCL
 
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
 			GameObject* AddPlanetToWorld();
+			RenderObject* CreatePlanetRenderObj();
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;
