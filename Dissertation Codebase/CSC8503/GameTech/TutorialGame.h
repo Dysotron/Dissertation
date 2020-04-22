@@ -45,6 +45,7 @@ namespace NCL
 			GameObject* selectionObject = nullptr;
 
 			OGLMesh* sphereMesh = nullptr;
+			OGLMesh* planetMesh = nullptr;
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
 

@@ -36,6 +36,8 @@ void TutorialGame::InitialiseAssets()
 
 	loadFunc("sphere.msh", &sphereMesh);
 
+	loadFunc("planet.msh", &planetMesh);
+
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
@@ -378,8 +380,7 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	sphere->GetTransform().SetWorldScale(sphereSize);
 	sphere->GetTransform().SetWorldPosition(Vector3(0,0,0));
 
-	//sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
-	sphere->SetRenderObject(NULL);
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, basicShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(0);
@@ -392,8 +393,6 @@ GameObject* TutorialGame::AddPlanetToWorld()
 
 OGLMesh* TutorialGame::CreatePlanetMesh()
 {
-	std::vector < Vector3 > topVertices = {};
-
 	float length = 100;
 	float elevation = sqrt((length * length) - ((length / 2) * (length / 2)));
 	Vector3 octaVert[6];
@@ -408,8 +407,6 @@ OGLMesh* TutorialGame::CreatePlanetMesh()
 	octaVert[5] = Vector3(0, -elevation, length / 2);
 
 	Vector3 middle = (octaVert[4] + octaVert[5]) / 2;
-
-	OGLShader* balloonShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl", "", "sphereTCS.glsl", "sphereTES.glsl");
 
 	std::vector < Vector3 > verts;
 
@@ -485,7 +482,7 @@ OGLMesh* TutorialGame::CreatePlanetMesh()
 	top->SetVertexNormals(normals);
 	top->SetVertexColours(white);
 	top->SetVertexTextureCoords(texCoords);
-	top->SetPrimitiveType(GeometryPrimitive::Patches);
+	top->SetPrimitiveType(GeometryPrimitive::Triangles);
 	top->UploadToGPU();
 
 	return top;
