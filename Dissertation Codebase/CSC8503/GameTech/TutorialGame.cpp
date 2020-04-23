@@ -38,7 +38,7 @@ void TutorialGame::InitialiseAssets()
 
 	loadFunc("planet.msh", &planetMesh);
 
-	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
 	InitCamera();
