@@ -40,6 +40,7 @@ void TutorialGame::InitialiseAssets()
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl", "", "sphereTCS.glsl", "sphereTES.glsl");
 
 	InitCamera();
 	InitWorld();

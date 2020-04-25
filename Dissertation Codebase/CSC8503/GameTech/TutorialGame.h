@@ -48,6 +48,7 @@ namespace NCL
 			OGLMesh* planetMesh = nullptr;
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
+			OGLShader* planetShader = nullptr;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject = nullptr;
