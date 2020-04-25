@@ -27,16 +27,23 @@ TutorialGame::TutorialGame()
 
 void TutorialGame::InitialiseAssets()
 {
-	auto loadFunc = [](const string& name, OGLMesh** into)
+	auto loadFuncTris = [](const string& name, OGLMesh** into)
 	{
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
 		(*into)->UploadToGPU();
 	};
+	
+	auto loadFuncPatch = [](const string& name, OGLMesh** into)
+	{
+		*into = new OGLMesh(name);
+		(*into)->SetPrimitiveType(GeometryPrimitive::Patches);
+		(*into)->UploadToGPU();
+	};
 
-	loadFunc("sphere.msh", &sphereMesh);
+	loadFuncTris("sphere.msh", &sphereMesh);
 
-	loadFunc("planet.msh", &planetMesh);
+	loadFuncPatch("planet.msh", &planetMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
