@@ -50,6 +50,12 @@ namespace NCL
 			OGLShader* basicShader = nullptr;
 			OGLShader* planetShader = nullptr;
 
+			OGLTexture* grassTexture = nullptr;
+			OGLTexture* snowTexture = nullptr;
+			OGLTexture* waterTexture = nullptr;
+			OGLTexture* sandTexture = nullptr;
+			OGLTexture* rockTexture = nullptr;
+
 			//Coursework Additional functionality	
 			GameObject* lockedObject = nullptr;
 			Vector3 lockedOffset = Vector3(0, 14, 20);

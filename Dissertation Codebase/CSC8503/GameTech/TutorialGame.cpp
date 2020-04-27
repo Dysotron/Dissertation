@@ -49,8 +49,13 @@ void TutorialGame::InitialiseAssets()
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+
+	grassTexture = (OGLTexture*)TextureLoader::LoadAPITexture("leaves.jpg");
+	snowTexture = (OGLTexture*)TextureLoader::LoadAPITexture("snow.jpg");
+	waterTexture = (OGLTexture*)TextureLoader::LoadAPITexture("water.jpg");
+	sandTexture = (OGLTexture*)TextureLoader::LoadAPITexture("sand.jpg");
+	rockTexture = (OGLTexture*)TextureLoader::LoadAPITexture("rock.jpg");
 	planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl", "", "sphereTCS.glsl", "sphereTES.glsl");
-	//planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl");
 
 	InitCamera();
 	InitWorld();
@@ -393,8 +398,11 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	planet->GetTransform().SetWorldScale(sphereSize);
 	planet->GetTransform().SetWorldPosition(Vector3(0,0,0));
 
-	RenderObject* rObj = new RenderObject(&planet->GetTransform(), planetMesh, basicTex, planetShader);
-	rObj->SetTexture()
+	RenderObject* rObj = new RenderObject(&planet->GetTransform(), planetMesh, grassTexture, planetShader);
+	rObj->SetTexture(snowTexture, 1);
+	rObj->SetTexture(waterTexture, 2);
+	rObj->SetTexture(sandTexture, 3);
+	rObj->SetTexture(rockTexture, 4);
 	planet->SetRenderObject(rObj);
 	planet->SetPhysicsObject(new PhysicsObject(&planet->GetTransform(), planet->GetBoundingVolume()));
 
