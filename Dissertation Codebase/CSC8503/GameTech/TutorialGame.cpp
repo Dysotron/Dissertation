@@ -22,7 +22,7 @@ TutorialGame::TutorialGame()
 
 	Debug::SetRenderer(renderer);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	InitialiseAssets();
 }
@@ -340,7 +340,7 @@ void TutorialGame::MoveSelectedObject()
 void TutorialGame::InitCamera()
 {
 	world->GetMainCamera()->SetNearPlane(0.5f);
-	world->GetMainCamera()->SetFarPlane(500.0f);
+	world->GetMainCamera()->SetFarPlane(5000.0f);
 	world->GetMainCamera()->SetPitch(0.0f);
 	world->GetMainCamera()->SetYaw(0.0f);
 	world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));

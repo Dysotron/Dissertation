@@ -77,7 +77,7 @@ vec3 normaliseVector3(vec3 vector)
 {
 	float dx = vector.x - 0;
 	float dy = vector.y - 0;
-	float dz = vector.z - 50;
+	float dz = vector.z - 0;
 	
 	//float height = texture(mainTex, OUT.texCoord).x;
 	float seed0 = 12;
@@ -109,7 +109,7 @@ vec3 normaliseVector3(vec3 vector)
 	
 	
 	float value = 0.0;
-    float amplitude = 0.3;
+    float amplitude = 0.2;
     float frequency = 0.0;
 	
     
@@ -117,7 +117,7 @@ vec3 normaliseVector3(vec3 vector)
     for (int i = 0; i < 5; i++) 
 	{
         value += amplitude * (sNoise(point0));
-        point0 *= 1.3;
+        point0 *= 5;
         amplitude *= 0.5;
     }
 	
@@ -131,9 +131,9 @@ vec3 normaliseVector3(vec3 vector)
 	
 	
 	
-	float radius = 15 + value * 5;
+	float radius = 1 + value;
 	
-	radius = 10;
+	//radius = 1;
 
 	float magnitude = sqrt(pow(dx,2) + pow(dy, 2) + pow(dz, 2));
 
@@ -165,7 +165,7 @@ void main ()
 	vec3 p1 = gl_TessCoord.y * gl_in[1].gl_Position.xyz;
 	vec3 p2 = gl_TessCoord.z * gl_in[2].gl_Position.xyz;
 	vec3 combinedPos = p0 + p1 + p2;
-	//combinedPos = normaliseVector3(combinedPos);
+	combinedPos = normaliseVector3(combinedPos);
 	
 	
 	vec4 p6 = gl_TessCoord.x * IN[0].colour;

@@ -18,7 +18,7 @@ out vec4 fragColor;
 void main(void) 
 {	
 	fragColor = texture(mainTex, IN.texCoord) * IN.colour;
-	fragColor = IN.colour;
+	//fragColor = IN.colour;
 	
 	/*//mix textures based on the normal value
 	vec4 grass = texture ( mainTex , IN.texCoord );
