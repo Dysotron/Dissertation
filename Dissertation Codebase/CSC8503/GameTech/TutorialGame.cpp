@@ -22,6 +22,8 @@ TutorialGame::TutorialGame()
 
 	Debug::SetRenderer(renderer);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	InitialiseAssets();
 }
 
@@ -45,9 +47,10 @@ void TutorialGame::InitialiseAssets()
 
 	loadFuncPatch("planet.msh", &planetMesh);
 
-	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
+	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl", "", "sphereTCS.glsl", "sphereTES.glsl");
+	//planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl");
 
 	InitCamera();
 	InitWorld();
@@ -338,9 +341,9 @@ void TutorialGame::InitCamera()
 {
 	world->GetMainCamera()->SetNearPlane(0.5f);
 	world->GetMainCamera()->SetFarPlane(500.0f);
-	world->GetMainCamera()->SetPitch(-15.0f);
-	world->GetMainCamera()->SetYaw(315.0f);
-	world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
+	world->GetMainCamera()->SetPitch(0.0f);
+	world->GetMainCamera()->SetYaw(0.0f);
+	world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
 	lockedObject = nullptr;
 }
 
@@ -349,7 +352,7 @@ void TutorialGame::InitWorld()
 	world->ClearAndErase();
 	physics->Clear();
 
-	AddSphereToWorld(Vector3(100, 0, 0), 10);
+	AddSphereToWorld(Vector3(100, 0, 0), 20);
 	AddPlanetToWorld();
 }
 
@@ -382,13 +385,16 @@ GameObject* TutorialGame::AddPlanetToWorld()
 {
 	GameObject* sphere = new GameObject();
 
-	Vector3 sphereSize = Vector3(10,10,10);
-	SphereVolume* volume = new SphereVolume(10);
+	float size = 20.0f;
+
+	Vector3 sphereSize = Vector3(size, size, size);
+	SphereVolume* volume = new SphereVolume(size);
 	sphere->SetBoundingVolume((CollisionVolume*)volume);
 	sphere->GetTransform().SetWorldScale(sphereSize);
 	sphere->GetTransform().SetWorldPosition(Vector3(0,0,0));
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, basicShader));
+	//sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, planetShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(0);

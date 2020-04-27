@@ -20,7 +20,8 @@ out Vertex
 void main (void) 
 {
 	gl_Position = vec4(position, 1.0);
-	OUT.colour	= colour;
+	//OUT.colour	= colour;
+	OUT.colour	= vec4(1,1,1,1);
 	OUT.texCoord = texCoord;
 	
 	mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));

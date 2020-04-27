@@ -17,9 +17,10 @@ out vec4 fragColor;
 
 void main(void) 
 {	
-	//fragColor = texture(mainTex, IN.texCoord) * IN.colour;
+	fragColor = texture(mainTex, IN.texCoord) * IN.colour;
+	fragColor = IN.colour;
 	
-	//mix textures based on the normal value
+	/*//mix textures based on the normal value
 	vec4 grass = texture ( mainTex , IN.texCoord );
 	vec4 snow = texture ( secondTex , IN.texCoord );
 	vec4 water = texture ( thirdTex , IN.texCoord );
@@ -74,7 +75,7 @@ void main(void)
 		//fragColor = IN.colour;
 		
 		//fragColor = mix(grass, snow, pow(normY, snowFade));
-		//fragColor = mix(grass, snow, normY);
+		//fragColor = mix(grass, snow, normY);*/
 	
 	
 }
