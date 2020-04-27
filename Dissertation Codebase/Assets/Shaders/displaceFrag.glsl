@@ -1,5 +1,5 @@
 #version 400 core
-uniform sampler2D mainTex;
+uniform sampler2D texture0;
 uniform sampler2D secondTex;
 uniform sampler2D thirdTex;
 uniform sampler2D fourthTex;
@@ -17,7 +17,7 @@ out vec4 fragColor;
 
 void main(void) 
 {	
-	fragColor = texture(mainTex, IN.texCoord) * IN.colour;
+	fragColor = texture(texture0, IN.texCoord) * IN.colour;
 	//fragColor = IN.colour;
 	
 	/*//mix textures based on the normal value

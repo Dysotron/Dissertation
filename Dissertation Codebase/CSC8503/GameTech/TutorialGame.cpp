@@ -383,26 +383,27 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 
 GameObject* TutorialGame::AddPlanetToWorld()
 {
-	GameObject* sphere = new GameObject();
+	GameObject* planet = new GameObject();
 
 	float size = 20.0f;
 
 	Vector3 sphereSize = Vector3(size, size, size);
 	SphereVolume* volume = new SphereVolume(size);
-	sphere->SetBoundingVolume((CollisionVolume*)volume);
-	sphere->GetTransform().SetWorldScale(sphereSize);
-	sphere->GetTransform().SetWorldPosition(Vector3(0,0,0));
+	planet->SetBoundingVolume((CollisionVolume*)volume);
+	planet->GetTransform().SetWorldScale(sphereSize);
+	planet->GetTransform().SetWorldPosition(Vector3(0,0,0));
 
-	//sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, basicShader));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), planetMesh, basicTex, planetShader));
-	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+	RenderObject* rObj = new RenderObject(&planet->GetTransform(), planetMesh, basicTex, planetShader);
+	rObj->SetTexture()
+	planet->SetRenderObject(rObj);
+	planet->SetPhysicsObject(new PhysicsObject(&planet->GetTransform(), planet->GetBoundingVolume()));
 
-	sphere->GetPhysicsObject()->SetInverseMass(0);
-	sphere->GetPhysicsObject()->InitSphereInertia();
+	planet->GetPhysicsObject()->SetInverseMass(0);
+	planet->GetPhysicsObject()->InitSphereInertia();
 
-	world->AddGameObject(sphere);
+	world->AddGameObject(planet);
 
-	return sphere;
+	return planet;
 }
 
 OGLMesh* TutorialGame::CreatePlanetMesh()

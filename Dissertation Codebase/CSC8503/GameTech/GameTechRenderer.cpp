@@ -140,7 +140,11 @@ void GameTechRenderer::RenderCamera() {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
 
-		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
+		for (int j = 0; j < 10; j++)
+		{
+			BindTextureToShader((OGLTexture*)(*i).GetTexture(j), "texture" + j, j);
+		}
+		
 
 		if (activeShader != shader) {
 			projLocation	= glGetUniformLocation(shader->GetProgramID(), "projMatrix");
@@ -181,7 +185,7 @@ void GameTechRenderer::RenderCamera() {
 
 		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
 
-		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1:0);
+		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetTexture(0) ? 1:0);
 
 		BindMesh((*i).GetMesh());
 		DrawBoundMesh();
