@@ -15,17 +15,17 @@ void Camera::UpdateCamera(float dt) {
 	float frameSpeed = keySensitivity * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
-		position += Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(0, 0, -1) * frameSpeed;
+		position.z -= frameSpeed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
-		position -= Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(0, 0, -1) * frameSpeed;
+		position.z += frameSpeed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
-		position += Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(-1, 0, 0) * frameSpeed;
+		position.x -= frameSpeed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
-		position -= Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(-1, 0, 0) * frameSpeed;
+		position.x += frameSpeed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT)) {
@@ -33,6 +33,23 @@ void Camera::UpdateCamera(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
 		position.y -= frameSpeed;
+	}
+
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
+	{
+		yaw -= frameSpeed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT))
+	{
+		yaw += frameSpeed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP))
+	{
+		pitch += frameSpeed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN))
+	{
+		pitch -= frameSpeed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM1))
@@ -57,12 +74,15 @@ void Camera::UpdateCamera(float dt) {
 Generates a view matrix for the camera's viewpoint. This matrix can be sent
 straight to the shader...it's already an 'inverse camera' matrix.
 */
-Matrix4 Camera::BuildViewMatrix() const {
+Matrix4 Camera::BuildViewMatrix() const 
+{
 	//Why do a complicated matrix inversion, when we can just generate the matrix
 	//using the negative values ;). The matrix multiplication order is important!
-	return	Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
+	/*return	Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
 		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
-		Matrix4::Translation(-position);
+		Matrix4::Translation(-position);*/
+
+	return Matrix4::Translation(-position)* Matrix4::Rotation(-yaw, Vector3(0, 1, 0))* Matrix4::Rotation(-pitch, Vector3(1, 0, 0));
 };
 
 Matrix4 Camera::BuildProjectionMatrix(float currentAspect) const {
