@@ -100,5 +100,7 @@ namespace NCL {
 		float	yaw;
 		float	pitch;
 		Vector3 position;
+
+		float keySensitivity = 200.0f;
 	};
 }
