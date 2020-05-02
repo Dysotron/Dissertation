@@ -140,10 +140,16 @@ void GameTechRenderer::RenderCamera() {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
 
-		for (int j = 0; j < 10; j++)
+		/*for (int j = 0; j < 10; j++)
 		{
 			BindTextureToShader((OGLTexture*)(*i).GetTexture(j), "texture" + j, j);
-		}
+		}*/
+
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(0), "texture0", 0);
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(1), "texture1", 1);
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(2), "texture2", 2);
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(3), "texture3", 3);
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(4), "texture4", 4);
 		
 
 		if (activeShader != shader) {

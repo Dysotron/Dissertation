@@ -1,9 +1,9 @@
 #version 400 core
 uniform sampler2D texture0;
-uniform sampler2D secondTex;
-uniform sampler2D thirdTex;
-uniform sampler2D fourthTex;
-uniform sampler2D fifthTex;
+uniform sampler2D texture1;
+uniform sampler2D texture2;
+uniform sampler2D texture3;
+uniform sampler2D texture4;
 
 in Vertex 
 {
@@ -20,12 +20,12 @@ void main(void)
 	fragColor = texture(texture0, IN.texCoord) * IN.colour;
 	//fragColor = IN.colour;
 	
-	/*//mix textures based on the normal value
-	vec4 grass = texture ( mainTex , IN.texCoord );
-	vec4 snow = texture ( secondTex , IN.texCoord );
-	vec4 water = texture ( thirdTex , IN.texCoord );
-	vec4 sand = texture ( fourthTex , IN.texCoord );
-	vec4 rock = texture ( fifthTex , IN.texCoord );
+	//mix textures based on the normal value
+	vec4 grass = texture ( texture0 , IN.texCoord );
+	vec4 snow = texture ( texture1 , IN.texCoord );
+	vec4 water = texture ( texture2 , IN.texCoord );
+	vec4 sand = texture ( texture3 , IN.texCoord );
+	vec4 rock = texture ( texture4 , IN.texCoord );
 	
 	float normY = abs(IN.normal.y);
 	
@@ -45,7 +45,7 @@ void main(void)
 		
 		else if (IN.height < ((sandHeight - waterHeight)/2) + waterHeight)
 		{
-			fragColor = mix(water, sand, (IN.height - waterHeight) * 1000);
+			fragColor = mix(water, sand, (IN.height - waterHeight));
 		}
 	
 		else if(IN.height < sandHeight)
@@ -75,7 +75,7 @@ void main(void)
 		//fragColor = IN.colour;
 		
 		//fragColor = mix(grass, snow, pow(normY, snowFade));
-		//fragColor = mix(grass, snow, normY);*/
+		//fragColor = mix(grass, snow, normY);
 	
 	
 }

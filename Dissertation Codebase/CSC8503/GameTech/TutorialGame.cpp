@@ -50,7 +50,7 @@ void TutorialGame::InitialiseAssets()
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
-	grassTexture = (OGLTexture*)TextureLoader::LoadAPITexture("leaves.jpg");
+	grassTexture = (OGLTexture*)TextureLoader::LoadAPITexture("grass.jpg");
 	snowTexture = (OGLTexture*)TextureLoader::LoadAPITexture("snow.jpg");
 	waterTexture = (OGLTexture*)TextureLoader::LoadAPITexture("water.jpg");
 	sandTexture = (OGLTexture*)TextureLoader::LoadAPITexture("sand.jpg");
