@@ -197,8 +197,9 @@ void main ()
 	vec3 aSpherical = CartesianToSpherical(combinedPos);
 
 	//get nearby points on sphere
-	vec3 bSpherical = vec3(aSpherical.x, aSpherical.y + 0.1, aSpherical.z);
-	vec3 cSpherical = vec3(aSpherical.x, aSpherical.y, aSpherical.z + 0.1);
+	float adjustment = 0.00001f;
+	vec3 bSpherical = vec3(aSpherical.x, aSpherical.y + adjustment, aSpherical.z);
+	vec3 cSpherical = vec3(aSpherical.x, aSpherical.y, aSpherical.z + adjustment);
 
 	//translate back to cartesian
 	vec3 bCartesian = SphericalToCartesian(bSpherical);
@@ -235,6 +236,7 @@ void main ()
 	vec3 p10 = gl_TessCoord.y * IN[1].normal;
 	vec3 p11 = gl_TessCoord.z * IN[2].normal;
 	OUT.polarity = normalize(p9 + p10 + p11).y;
+	OUT.normal = normalize(p9 + p10 + p11);
 	
 	gl_Position = projMatrix * viewMatrix * worldPos;
 }
