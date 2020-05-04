@@ -73,13 +73,8 @@ float sNoise(vec2 v)
 	return 130.0 * dot(m, g);
 }
 
-vec3 normaliseVector3(vec3 vector)
+float GenerateNoiseValue (vec3 vector)
 {
-	float dx = vector.x - 0;
-	float dy = vector.y - 0;
-	float dz = vector.z - 0;
-	
-	//float height = texture(mainTex, OUT.texCoord).x;
 	float seed0 = 12;
 	float seed1 = 14;
 	float seed2 = 104;
@@ -123,27 +118,24 @@ vec3 normaliseVector3(vec3 vector)
 	
 	value = pow(value, 2);
 	
-	//value = sNoise(point0);
-	
-	//value = pow(value, 2);
-	
+	return value;
+}
+
+vec3 normaliseVector3(vec3 vector)
+{
+	float value = GenerateNoiseValue(vector);
 	OUT.height = value;
-	
-	
-	
 	float radius = 1 + value;
 	
-	//radius = 1;
+	float dx = vector.x - 0;
+	float dy = vector.y - 0;
+	float dz = vector.z - 0;
 
 	float magnitude = sqrt(pow(dx,2) + pow(dy, 2) + pow(dz, 2));
 
-		/*dx = dx * (time/2+1) / magnitude;
-		dy = dy * (time/2+1) / magnitude;
-		dz = dz * (time/2+1) / magnitude;*/
-		
-		dx = dx * (radius) / magnitude;
-		dy = dy * (radius) / magnitude;
-		dz = dz * (radius) / magnitude;
+	dx = dx * (radius) / magnitude;
+	dy = dy * (radius) / magnitude;
+	dz = dz * (radius) / magnitude;
 	
 	return vec3(dx, dy, dz);
 }
