@@ -170,6 +170,16 @@ vec3 SphericalToCartesian(vec3 coord)
 	return vec3(x, y, z);
 }
 
+vec3 GenerateSurfaceNormal(vec3 a, vec3 b, vec3 c)
+{
+	vec3 ba = b - a;
+	vec3 ca = c - a;
+
+	vec3 normal = cross(ba, ca);
+	normal = normalize(normal);
+	return normal;
+}
+
 void main () 
 {
 
