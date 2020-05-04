@@ -10,6 +10,7 @@ in Vertex
 	vec2 texCoord;
 	vec4 colour;
 	vec3 normal;
+	float polarity;
 	float height;
 } IN;
 
@@ -24,12 +25,12 @@ void main(void)
 	vec4 sand = texture ( texture3 , IN.texCoord );
 	vec4 rock = texture ( texture4 , IN.texCoord );
 	
-	float normY = abs(IN.normal.y);
+	float normY = abs(IN.polarity);
 	
 	float waterHeight = 0.001;
 	float sandHeight = waterHeight + 0.002;
 	float mountHeight = 0.1;
-	int snowFade = 3;
+	int snowFade = 5;
 		
 		if (IN.height < waterHeight)
 		{
@@ -61,5 +62,8 @@ void main(void)
 			fragColor = mix(rock, snow, IN.height *10); //*10
 		}
 		
+
 		fragColor = mix(fragColor, snow, pow(normY, snowFade));	
+		
+		
 }

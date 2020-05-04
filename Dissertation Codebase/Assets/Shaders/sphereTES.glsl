@@ -22,6 +22,7 @@ out Vertex // Each TES works on a single vertex !
 	vec2 texCoord ;
 	vec4 colour;
 	vec3 normal;
+	float polarity;
 	float height;
 } OUT;
 
@@ -229,6 +230,7 @@ void main ()
 	vec3 p9 = gl_TessCoord.x * IN[0].normal;
 	vec3 p10 = gl_TessCoord.y * IN[1].normal;
 	vec3 p11 = gl_TessCoord.z * IN[2].normal;
+	OUT.polarity = normalize(p9 + p10 + p11).y;
 	OUT.normal = normalize(p9 + p10 + p11);
 
 	vec4 worldPos = modelMatrix * vec4(combinedPos, 1);
