@@ -12,6 +12,7 @@ in Vertex
 	vec3 normal;
 	float polarity;
 	float height;
+	vec3 worldPos;
 } IN;
 
 out vec4 fragColor;

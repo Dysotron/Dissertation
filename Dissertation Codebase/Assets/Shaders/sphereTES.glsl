@@ -24,6 +24,7 @@ out Vertex // Each TES works on a single vertex !
 	vec3 normal;
 	float polarity;
 	float height;
+	vec3 worldPos;
 } OUT;
 
 vec3 permute(vec3 x) 
@@ -217,6 +218,9 @@ void main ()
 
 	//add noise to original point
 	combinedPos = normaliseVector3(combinedPos);
+
+	vec4 worldPos = modelMatrix * vec4(combinedPos, 1.0);
+	OUT.worldPos = worldPos.xyz;
 
 	OUT.normal = GenerateSurfaceNormal(combinedPos, bCartesian, cCartesian);
 	
