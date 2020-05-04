@@ -16,8 +16,8 @@ in Vertex
 
 out vec4 fragColor;
 
-void main(void) 
-{	
+void TextureMixing()
+{
 	//mix textures based on the normal value
 	vec4 grass = texture ( texture0 , IN.texCoord );
 	vec4 snow = texture ( texture1 , IN.texCoord );
@@ -63,7 +63,10 @@ void main(void)
 		}
 		
 
-		fragColor = mix(fragColor, snow, pow(normY, snowFade));	
-		
-		
+		fragColor = mix(fragColor, snow, pow(normY, snowFade));
+}
+
+void main(void) 
+{	
+	TextureMixing();
 }
