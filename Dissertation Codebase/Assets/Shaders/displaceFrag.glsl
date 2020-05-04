@@ -17,9 +17,6 @@ out vec4 fragColor;
 
 void main(void) 
 {	
-	fragColor = texture(texture0, IN.texCoord) * IN.colour;
-	//fragColor = IN.colour;
-	
 	//mix textures based on the normal value
 	vec4 grass = texture ( texture0 , IN.texCoord );
 	vec4 snow = texture ( texture1 , IN.texCoord );
@@ -32,15 +29,11 @@ void main(void)
 	float waterHeight = 0.001;
 	float sandHeight = waterHeight + 0.002;
 	float mountHeight = 0.1;
-	//float capHeight = 0.03;
 	int snowFade = 3;
-	
-		//fragColor = mix(grass, snow, pow(normY,snowFade));
 		
 		if (IN.height < waterHeight)
 		{
 			fragColor = water;
-			//fragColor = mix(water, snow, pow(normY,snowFade));
 		}
 		
 		else if (IN.height < ((sandHeight - waterHeight)/2) + waterHeight)
@@ -50,7 +43,6 @@ void main(void)
 	
 		else if(IN.height < sandHeight)
 		{
-			//fragColor = mix(sand, snow, pow(normY,snowFade));
 			fragColor = sand;
 		}
 		
@@ -61,8 +53,7 @@ void main(void)
 		
 		else if(IN.height < mountHeight)
 		{
-			//fragColor = mix(fragColor, rock, IN.height * 25);
-			fragColor = mix(grass, rock, IN.height *25); //*25
+			fragColor = mix(grass, rock, IN.height *25);
 		}
 		
 		else
@@ -70,12 +61,5 @@ void main(void)
 			fragColor = mix(rock, snow, IN.height *10); //*10
 		}
 		
-		fragColor = mix(fragColor, snow, pow(normY, snowFade));
-		
-		//fragColor = IN.colour;
-		
-		//fragColor = mix(grass, snow, pow(normY, snowFade));
-		//fragColor = mix(grass, snow, normY);
-	
-	
+		fragColor = mix(fragColor, snow, pow(normY, snowFade));	
 }

@@ -214,8 +214,10 @@ void main ()
 	bCartesian = SphericalToCartesian(bSpherical);
 	cCartesian = SphericalToCartesian(cSpherical);
 
-
+	//add noise to original point
 	combinedPos = normaliseVector3(combinedPos);
+
+
 	
 	
 	vec4 p6 = gl_TessCoord.x * IN[0].colour;
