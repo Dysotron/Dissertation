@@ -191,12 +191,28 @@ void main ()
 	
 	vec3 combinedPos = p0 + p1 + p2;
 
+	//get into spherical coordinates
 	vec3 aSpherical = CartesianToSpherical(combinedPos);
+
+	//get nearby points on sphere
 	vec3 bSpherical = vec3(aSpherical.x, aSpherical.y + 0.1, aSpherical.z);
 	vec3 cSpherical = vec3(aSpherical.x, aSpherical.y, aSpherical.z + 0.1);
 
+	//translate back to cartesian
 	vec3 bCartesian = SphericalToCartesian(bSpherical);
 	vec3 cCartesian = SphericalToCartesian(cSpherical);
+
+	//so that noise values can be generated
+	float bNoise = GenerateNoiseValue(bCartesian);
+	float cNoise = GenerateNoiseValue(cCartesian);
+
+	//apply noise to radius
+	bSpherical.x += bNoise;
+	cSpherical.x += cNoise;
+
+	//translate back to get real position of nearby points after noise applied
+	bCartesian = SphericalToCartesian(bSpherical);
+	cCartesian = SphericalToCartesian(cSpherical);
 
 
 	combinedPos = normaliseVector3(combinedPos);
