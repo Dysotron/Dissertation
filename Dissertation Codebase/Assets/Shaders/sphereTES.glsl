@@ -196,7 +196,17 @@ void main ()
 	vec3 p0 = gl_TessCoord.x * gl_in[0].gl_Position.xyz;
 	vec3 p1 = gl_TessCoord.y * gl_in[1].gl_Position.xyz;
 	vec3 p2 = gl_TessCoord.z * gl_in[2].gl_Position.xyz;
+	
 	vec3 combinedPos = p0 + p1 + p2;
+
+	vec3 aSpherical = CartesianToSpherical(combinedPos);
+	vec3 bSpherical = vec3(aSpherical.x, aSpherical.y + 0.1, aSpherical.z);
+	vec3 cSpherical = vec3(aSpherical.x, aSpherical.y, aSpherical.z + 0.1);
+
+	vec3 bCartesian = SphericalToCartesian(bSpherical);
+	vec3 cCartesian = SphericalToCartesian(cSpherical);
+
+
 	combinedPos = normaliseVector3(combinedPos);
 	
 	
