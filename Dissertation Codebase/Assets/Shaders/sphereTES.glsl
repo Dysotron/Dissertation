@@ -235,14 +235,6 @@ void main ()
 	vec3 p10 = gl_TessCoord.y * IN[1].normal;
 	vec3 p11 = gl_TessCoord.z * IN[2].normal;
 	OUT.polarity = normalize(p9 + p10 + p11).y;
-
-	vec4 worldPos = modelMatrix * vec4(combinedPos, 1);
-
-	/*float height = texture(mainTex, OUT.texCoord).x;
-
-	worldPos.y += height;*/
 	
 	gl_Position = projMatrix * viewMatrix * worldPos;
-	
-	//OUT.normal = getSurfaceNormal(p0,p1,p2);
 }
