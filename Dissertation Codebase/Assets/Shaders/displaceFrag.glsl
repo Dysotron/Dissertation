@@ -18,6 +18,7 @@ in Vertex
 	float polarity;
 	float height;
 	vec3 worldPos;
+	float terrainNoise;
 } IN;
 
 out vec4 fragColor;

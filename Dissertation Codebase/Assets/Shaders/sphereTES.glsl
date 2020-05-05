@@ -25,6 +25,7 @@ out Vertex // Each TES works on a single vertex !
 	float polarity;
 	float height;
 	vec3 worldPos;
+	float terrainNoise;
 } OUT;
 
 vec3 permute(vec3 x) 
