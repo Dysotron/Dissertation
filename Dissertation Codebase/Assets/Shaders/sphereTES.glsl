@@ -89,23 +89,6 @@ float GenerateNoiseValue (vec3 vector)
 	
 	vec2 point = vec2(vector.x + seed0, vector.y + seed0);
 	
-	/*float elevation = cnoise(normalize(point0)*1000);
-	
-	elevation += 0.5 * cnoise(normalize(point1)*1000000);
-	
-	elevation += 0.75 * cnoise(normalize(point2)*100000);
-	
-	elevation += cnoise(normalize(point3)*10000);
-	
-	elevation = elevation/3;
-	
-	elevation = pow(elevation, 2);
-	
-	OUT.height = elevation;
-	
-	float radius = 100 + elevation*5;*/
-	
-	
 	float value = 0.0;
     float amplitude = 0.2;
     float frequency = 0.0;
