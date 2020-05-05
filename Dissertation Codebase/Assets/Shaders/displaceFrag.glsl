@@ -39,11 +39,17 @@ float TextureMixing()
 	float sandHeight = waterHeight + 0.002;
 	float mountHeight = 0.1;
 	int snowFade = 5;
+
+	float waterPower = 20.0f;
+	float sandPower = 2.0f;
+	float grassPower = 5.0f;
+	float rockPower = 10.0f;
+	float snowPower = 10.0f;
 		
 		if (IN.height < waterHeight)
 		{
 			fragColor = water;
-			power = 50.0f;
+			power = waterPower;
 		}
 		
 		else if (IN.height < ((sandHeight - waterHeight)/2) + waterHeight)
@@ -54,28 +60,30 @@ float TextureMixing()
 		else if(IN.height < sandHeight)
 		{
 			fragColor = sand;
-
-			power = 2.0f;
+			power = sandPower;
 		}
 		
 		else if(IN.height < sandHeight + 0.001)
 		{
 			fragColor = mix(sand, grass, (IN.height - sandHeight) * 1000);
+			power = mix(sandPower, grassPower, (IN.height - sandHeight) * 1000);
 		}
 		
 		else if(IN.height < mountHeight)
 		{
 			fragColor = mix(grass, rock, IN.height *25);
+			power = mix(grassPower, rockPower, IN.height *25);
 		}
 		
 		else
 		{
-			fragColor = mix(rock, snow, IN.height *10); //*10
-			power = 10.0f;
+			fragColor = mix(rock, snow, IN.height *10);
+			power = mix(rockPower, snowPower, IN.height *10);
 		}
 		
 
 		fragColor = mix(fragColor, snow, pow(normY, snowFade));
+		power = mix(power, snowPower, pow(normY, snowFade));
 
 		return power;
 }
@@ -101,5 +109,5 @@ void main(void)
 	vec3 colour = (diffuse.rgb * lightColour.rgb);
 	colour += (lightColour.rgb * sFactor) * 0.33;
 	fragColor = vec4(colour * atten * lambert, diffuse.a);
-	fragColor.rgb += (diffuse.rgb * lightColour.rgb) *0.5;
+	fragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.2;
 }
