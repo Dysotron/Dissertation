@@ -79,21 +79,11 @@ float sNoise(vec2 v)
 float GenerateNoiseValue (vec3 vector)
 {
 	float seed0 = 12;
-	float seed1 = 14;
-	float seed2 = 104;
-	float seed3 = 24;
 	vec2 point0 = vec2(vector.x + seed0, vector.z + vector.y + seed0);
-	vec2 point1 = vec2(vector.x + seed1, vector.z + vector.y + seed1);
-	vec2 point2 = vec2(vector.x + seed2, vector.z + vector.y + seed2);
-	vec2 point3 = vec2(vector.x + seed3, vector.z + vector.y + seed3);
 	
-	vec2 point = vec2(vector.x + seed0, vector.y + seed0);
-	
-	float value = 0.0;
-    float amplitude = 0.2;
-    float frequency = 0.0;
-	
-    
+	float value = 0.0f;
+    float amplitude = 0.2f;
+	 
     // Loop of octaves
     for (int i = 0; i < 5; i++) 
 	{
@@ -177,6 +167,9 @@ void main ()
 	
 	vec3 combinedPos = p0 + p1 + p2;
 
+	OUT.terrainNoise = sNoise(vec2(combinedPos.x + combinedPos.y, combinedPos.z));
+
+
 	//get into spherical coordinates
 	vec3 aSpherical = CartesianToSpherical(combinedPos);
 
@@ -223,4 +216,5 @@ void main ()
 	OUT.normal = normalize(p9 + p10 + p11);
 	
 	gl_Position = projMatrix * viewMatrix * worldPos;
+
 }
