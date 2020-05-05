@@ -33,6 +33,8 @@ float TextureMixing()
 	vec4 water = texture ( texture2 , IN.texCoord );
 	vec4 sand = texture ( texture3 , IN.texCoord );
 	vec4 rock = texture ( texture4 , IN.texCoord );
+
+	vec4 base = mix(grass, sand, IN.terrainNoise);
 	
 	float normY = abs(IN.polarity);
 	
@@ -43,7 +45,7 @@ float TextureMixing()
 
 	float waterPower = 20.0f;
 	float sandPower = 2.0f;
-	float grassPower = 5.0f;
+	float basePower = 5.0f;
 	float rockPower = 10.0f;
 	float snowPower = 10.0f;
 		
@@ -66,14 +68,14 @@ float TextureMixing()
 		
 		else if(IN.height < sandHeight + 0.001)
 		{
-			fragColor = mix(sand, grass, (IN.height - sandHeight) * 1000);
-			power = mix(sandPower, grassPower, (IN.height - sandHeight) * 1000);
+			fragColor = mix(sand, base, (IN.height - sandHeight) * 1000);
+			power = mix(sandPower, basePower, (IN.height - sandHeight) * 1000);
 		}
 		
 		else if(IN.height < mountHeight)
 		{
-			fragColor = mix(grass, rock, IN.height *25);
-			power = mix(grassPower, rockPower, IN.height *25);
+			fragColor = mix(base, rock, IN.height *25);
+			power = mix(basePower, rockPower, IN.height *25);
 		}
 		
 		else
