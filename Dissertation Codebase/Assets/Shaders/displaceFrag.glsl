@@ -45,9 +45,11 @@ float TextureMixing()
 
 	float waterPower = 20.0f;
 	float sandPower = 2.0f;
-	float basePower = 5.0f;
+	float grassPower = 5.0f;
 	float rockPower = 10.0f;
 	float snowPower = 10.0f;
+
+	float basePower = mix(grassPower, sandPower, IN.terrainNoise);
 		
 		if (IN.height < waterHeight)
 		{
@@ -74,8 +76,8 @@ float TextureMixing()
 		
 		else if(IN.height < mountHeight)
 		{
-			fragColor = mix(base, rock, IN.height *25);
-			power = mix(basePower, rockPower, IN.height *25);
+			fragColor = mix(base, rock, IN.height *20);
+			power = mix(basePower, rockPower, IN.height *20);
 		}
 		
 		else
