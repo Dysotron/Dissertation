@@ -5,6 +5,8 @@ uniform sampler2D texture2;
 uniform sampler2D texture3;
 uniform sampler2D texture4;
 
+uniform sampler2DShadow shadowTex;
+
 uniform vec3 cameraPos;
 uniform vec3 lightPos;
 uniform vec4 lightColour;
