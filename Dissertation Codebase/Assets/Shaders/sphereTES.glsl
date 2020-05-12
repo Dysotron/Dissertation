@@ -9,6 +9,7 @@ uniform float time ;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
+uniform mat4 shadowMatrix;
 
 in Vertex // Sent from the TCS
 { 
@@ -26,6 +27,7 @@ out Vertex // Each TES works on a single vertex !
 	float height;
 	vec3 worldPos;
 	float terrainNoise;
+	vec4 shadowProj;
 } OUT;
 
 vec3 permute(vec3 x) 
@@ -216,5 +218,7 @@ void main ()
 	OUT.normal = normalize(p9 + p10 + p11);
 	
 	gl_Position = projMatrix * viewMatrix * worldPos;
+
+	OUT.shadowProj = shadowMatrix * vec4 ( combinedPos,1);
 
 }

@@ -21,6 +21,7 @@ in Vertex
 	float height;
 	vec3 worldPos;
 	float terrainNoise;
+	vec4 shadowProj;
 } IN;
 
 out vec4 fragColor;
