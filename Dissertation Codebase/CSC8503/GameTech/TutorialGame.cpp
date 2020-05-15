@@ -78,6 +78,7 @@ void TutorialGame::UpdateGame(float dt)
 {
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
+	MoveAsteroid();
 
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
@@ -204,6 +205,16 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	return planet;
 }
 
+void TutorialGame::MoveAsteroid()
+{
+	Vector3 pos = asteroid->GetTransform().GetWorldPosition();
 
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::I))
+	{
+		pos.x -= 1;
+		//asteroid->GetTransform().SetWorldPosition(pos);
+		asteroid->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
+	}
+}
 
 

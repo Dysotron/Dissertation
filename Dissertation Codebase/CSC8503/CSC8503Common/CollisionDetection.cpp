@@ -282,6 +282,7 @@ bool CollisionDetection::SphereIntersection(const SphereVolume& volumeA, const T
 		Vector3 localB = -normal * volumeB.GetRadius();
 
 		collisionInfo.AddContactPoint(localA, localB, normal, pentration);
+		std::cout << "collide";
 		return true; // colliding!!
 	}
 
