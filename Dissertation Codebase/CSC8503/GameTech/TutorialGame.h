@@ -23,12 +23,6 @@ namespace NCL
 
 			void InitWorld();
 
-			bool SelectObject();
-			void MoveSelectedObject();
-			void DebugObjectMovement();
-			void LockedObjectMovement();
-			void LockedCameraMovement();
-
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
 			GameObject* AddPlanetToWorld();
 
@@ -42,6 +36,7 @@ namespace NCL
 			float		forceMagnitude;
 
 			GameObject* selectionObject = nullptr;
+			GameObject* asteroid = nullptr;
 
 			OGLMesh* sphereMesh = nullptr;
 			OGLMesh* planetMesh = nullptr;
@@ -56,14 +51,6 @@ namespace NCL
 			OGLTexture* waterTexture = nullptr;
 			OGLTexture* sandTexture = nullptr;
 			OGLTexture* rockTexture = nullptr;
-
-			//Coursework Additional functionality	
-			GameObject* lockedObject = nullptr;
-			Vector3 lockedOffset = Vector3(0, 14, 20);
-			void LockCameraToObject(GameObject* o)
-			{
-				lockedObject = o;
-			}
 		};
 	}
 }
