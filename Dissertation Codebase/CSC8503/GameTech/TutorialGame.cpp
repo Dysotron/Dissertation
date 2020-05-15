@@ -143,9 +143,9 @@ void TutorialGame::InitWorld()
 	world->ClearAndErase();
 	physics->Clear();
 
-	asteroid = AddSphereToWorld(Vector3(30, 0, 0), 5);
+	asteroid = AddSphereToWorld(Vector3(300, -100, 20), 5);
 
-	AddPlanetToWorld();
+	planet = AddPlanetToWorld();
 }
 
 //From here on it's functions to add in objects to the world!
@@ -207,13 +207,15 @@ GameObject* TutorialGame::AddPlanetToWorld()
 
 void TutorialGame::MoveAsteroid()
 {
-	Vector3 pos = asteroid->GetTransform().GetWorldPosition();
+	Vector3 asteroidPos = asteroid->GetTransform().GetWorldPosition();
+	Vector3 planetPos = planet->GetTransform().GetWorldPosition();
+
+	Vector3 direction = planetPos - asteroidPos;
+	direction.Normalise();
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::I))
 	{
-		pos.x -= 1;
-		//asteroid->GetTransform().SetWorldPosition(pos);
-		asteroid->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
+		asteroid->GetPhysicsObject()->AddForce(direction * 10000);
 	}
 }
 

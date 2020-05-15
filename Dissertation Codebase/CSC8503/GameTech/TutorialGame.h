@@ -39,6 +39,7 @@ namespace NCL
 
 			GameObject* selectionObject = nullptr;
 			GameObject* asteroid = nullptr;
+			GameObject* planet = nullptr;
 
 			OGLMesh* sphereMesh = nullptr;
 			OGLMesh* planetMesh = nullptr;
