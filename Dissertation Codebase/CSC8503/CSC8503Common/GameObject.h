@@ -6,11 +6,7 @@
 #include "RenderObject.h"
 #include "NetworkObject.h"
 
-#include "NavigationGrid.h"
-
 #include <vector>
-
-//#include "Debug.h"
 
 using std::vector;
 
@@ -20,8 +16,8 @@ namespace NCL {
 
 		class GameObject	{
 		public:
-			GameObject(string name = "", bool isStatic = true);
-			virtual ~GameObject();
+			GameObject(string name = "");
+			~GameObject();
 
 			void SetBoundingVolume(CollisionVolume* vol) {
 				boundingVolume = vol;
@@ -33,10 +29,6 @@ namespace NCL {
 
 			bool IsActive() const {
 				return isActive;
-			}
-			
-			bool IsStatic() const {
-				return isStatic;
 			}
 
 			const Transform& GetConstTransform() const {
@@ -71,16 +63,6 @@ namespace NCL {
 				return name;
 			}
 
-			void SetSpeed(int speed)
-			{
-				this->speed = speed;
-			}
-
-			const int GetSpeed()
-			{
-				return speed;
-			}
-
 			virtual void OnCollisionBegin(GameObject* otherObject) {
 				//std::cout << "OnCollisionBegin event occured!\n";
 			}
@@ -89,50 +71,9 @@ namespace NCL {
 				//std::cout << "OnCollisionEnd event occured!\n";
 			}
 
-			virtual GameObject* GetItem()
-			{
-				//return heldItem;
-				return nullptr;
-			}
-
-			virtual void SetItem(GameObject* item)
-			{
-				//heldItem = item;
-			}
-
-			virtual int GetScoreValue()
-			{
-				return 0;
-			}
-
 			bool GetBroadphaseAABB(Vector3&outsize) const;
 
 			void UpdateBroadphaseAABB();
-
-			virtual bool GetCollected()
-			{
-				return false;
-			}
-
-			virtual void SetCollected(bool held)
-			{
-				
-			}
-
-			void MoveTowardsNode();
-			void GetNextNode();
-			void GenerateNodes(Vector3 endPos);
-
-			void MoveTowardsPos(Vector3 pos);
-
-			void InitGrid() {
-				grid = new NavigationGrid("TestGrid2.txt");
-			}
-
-			vector<Vector3> GetPathNodes()
-			{
-				return pathNodes;
-			}
 
 		protected:
 			Transform			transform;
@@ -143,21 +84,9 @@ namespace NCL {
 			NetworkObject*		networkObject;
 
 			bool	isActive;
-			bool isStatic;
 			string	name;
 
-			int speed = 20;
-			int scoreValue;
-
 			Vector3 broadphaseAABB;
-			Vector3 initialSpawn;
-
-			vector<Vector3> pathNodes;
-			Vector3 endPos;
-			Vector3 nextPos;
-			NavigationGrid* grid = nullptr;
-			NavigationPath outPath;
-			int pathIndex = 0;
 		};
 	}
 }

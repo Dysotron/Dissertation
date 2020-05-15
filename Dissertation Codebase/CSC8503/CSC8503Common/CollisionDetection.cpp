@@ -3,7 +3,6 @@
 #include "AABBVolume.h"
 #include "OBBVolume.h"
 #include "SphereVolume.h"
-#include "Ray.h"
 #include "../../Common/Vector2.h"
 #include "../../Common/Window.h"
 #include "../../Common/Maths.h"
@@ -20,296 +19,49 @@ bool CollisionDetection::RayPlaneIntersection(const Ray&r, const Plane&p, RayCol
 	return false;
 }
 
-bool CollisionDetection::RayIntersection(const Ray& r,GameObject& object, RayCollision& collision) 
-{
-	const Transform& transform = object.GetConstTransform();
-	const CollisionVolume* volume = object.GetBoundingVolume();
-
-	if (!volume)
-	{
-		return false;
-	}
-
-	switch (volume->type)
-	{
-	case VolumeType::AABB:
-		return RayAABBIntersection(r, transform, (const AABBVolume&)*volume, collision);
-	case VolumeType::OBB:
-		return RayOBBIntersection(r, transform, (const OBBVolume&)*volume, collision);
-	case VolumeType::Sphere:
-		return RaySphereIntersection(r, transform, (const SphereVolume&)*volume, collision);
-	}
-
+bool CollisionDetection::RayIntersection(const Ray& r,GameObject& object, RayCollision& collision) {
 	return false;
 }
 
-bool CollisionDetection::RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision) 
-{
-	Vector3 boxMin = boxPos - boxSize;
-	Vector3 boxMax = boxPos + boxSize;
-
-	Vector3 rayPos = r.GetPosition();
-	Vector3 rayDir = r.GetDirection();
-
-	Vector3 tVals(-1, -1, -1);
-
-	for (int i = 0; i < 3; ++i)
-	{
-		if (rayDir[i] > 0)
-		{
-			tVals[i] = (boxMin[i] - rayPos[i]) / rayDir[i];
-		}
-		
-		else if (rayDir[i] < 0)
-		{
-			tVals[i] = (boxMax[i] - rayPos[i]) / rayDir[i];
-		}
-	}
-
-	float bestT = tVals.GetMaxElement();
-
-	if (bestT < 0.0f)
-	{
-		return false; //no backwards rays!
-	}
-
-	Vector3 intersection = rayPos + (rayDir * bestT);
-
-	const float epsilon = 0.0001f;
-
-	for (int i = 0; i < 3; ++i)
-	{
-		if (intersection[i] + epsilon < boxMin[i] || intersection[i] - epsilon > boxMax[i])
-		{
-			return false; //best intersection doesnt touch the box!
-		}
-	}
-
-	collision.collidedAt = intersection;
-	collision.rayDistance = bestT;
-
-	return true;
-}
-
-bool CollisionDetection::RayAABBIntersection(const Ray&r, const Transform& worldTransform, const AABBVolume& volume, RayCollision& collision) 
-{
-	Vector3 boxPos = worldTransform.GetWorldPosition();
-	Vector3 boxSize = volume.GetHalfDimensions();
-
-	return RayBoxIntersection(r, boxPos, boxSize, collision);
-}
-
-bool CollisionDetection::RayOBBIntersection(const Ray&r, const Transform& worldTransform, const OBBVolume& volume, RayCollision& collision) 
-{
-	Quaternion orientation = worldTransform.GetWorldOrientation();
-	Vector3 position = worldTransform.GetWorldPosition();
-
-	Matrix3 transform = Matrix3(orientation);
-	Matrix3 invTransform = Matrix3(orientation.Conjugate());
-
-	Vector3 localRayPos = r.GetPosition() - position;
-
-	Ray tempRay(invTransform * localRayPos, invTransform * r.GetDirection());
-
-	bool collided = RayBoxIntersection(tempRay, Vector3(), volume.GetHalfDimensions(), collision);
-
-	if (collided)
-	{
-		collision.collidedAt = transform * collision.collidedAt + position;
-	}
-
-	return collided;
-}
-
-bool CollisionDetection::RaySphereIntersection(const Ray&r, const Transform& worldTransform, const SphereVolume& volume, RayCollision& collision) 
-{
-	Vector3 spherePos = worldTransform.GetWorldPosition();
-	float sphereRadius = volume.GetRadius();
-
-	//get dir between ray and sphere
-	Vector3 dir = spherePos - r.GetPosition();
-
-	//then project sphere's origin onto dir vector
-	float sphereProj = Vector3::Dot(dir, r.GetDirection());
-
-	//get closest point on ray line to sphere
-	Vector3 point = r.GetPosition() + (r.GetDirection() * sphereProj);
-
-	float sphereDist = (point - spherePos).Length();
-
-	if (sphereDist > sphereRadius)
-	{
-		return false;
-	}
-
-	float sNorm = sphereDist / sphereRadius;
-	sNorm = cos(DegreesToRadians(sNorm * 90.0f));
-
-	/*float offset = sqrt((sphereRadius * sphereRadius) - (sphereDist * sphereDist));
-	collision.rayDistance = sphereProj - offset;*/
-
-	collision.rayDistance = sphereProj - (sphereRadius * sNorm);
-	collision.collidedAt = r.GetPosition() + (r.GetDirection() * collision.rayDistance);
-
-	return true;
-}
-
-bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, CollisionInfo& collisionInfo) 
-{
-	const CollisionVolume* volA = a->GetBoundingVolume();
-	const CollisionVolume* volB = b->GetBoundingVolume();
-
-	if (!volA || !volB)
-	{
-		return false;
-	}
-
-	collisionInfo.a = a;
-	collisionInfo.b = b;
-
-	const Transform& transformA = a->GetConstTransform();
-	const Transform& transformB = b->GetConstTransform();
-
-	VolumeType pairType = (VolumeType)((int)volA->type | (int)volB->type);
-
-	if (pairType == VolumeType::AABB)
-	{
-		return AABBIntersection((AABBVolume&)*volA, transformA, (AABBVolume&)*volB, transformB, collisionInfo);
-	}
-	
-	if (pairType == VolumeType::Sphere)
-	{
-		return SphereIntersection((SphereVolume&)*volA, transformA, (SphereVolume&)*volB, transformB, collisionInfo);
-	}
-
-	if (volA->type == VolumeType::AABB && volB->type == VolumeType::Sphere)
-	{
-		return AABBSphereIntersection((AABBVolume&)*volA, transformA, (SphereVolume&)*volB, transformB, collisionInfo);
-	}
-	
-	if (volA->type == VolumeType::Sphere && volB->type == VolumeType::AABB)
-	{
-		collisionInfo.a = b;
-		collisionInfo.b = a;
-		return AABBSphereIntersection((AABBVolume&)*volB, transformB, (SphereVolume&)*volA, transformA, collisionInfo);
-	}
-
+bool CollisionDetection::RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision) {
 	return false;
 }
 
-bool CollisionDetection::AABBTest(const Vector3& posA, const Vector3& posB, const Vector3& halfSizeA, const Vector3& halfSizeB) 
-{
-	Vector3 delta = posB - posA;
-	Vector3 totalSize = halfSizeA + halfSizeB;
+bool CollisionDetection::RayAABBIntersection(const Ray&r, const Transform& worldTransform, const AABBVolume& volume, RayCollision& collision) {
+	return false;
+}
 
-	if (abs(delta.x) < totalSize.x && abs(delta.y) < totalSize.y && abs(delta.z) < totalSize.z)
-	{
-		return true;
-	}
+bool CollisionDetection::RayOBBIntersection(const Ray&r, const Transform& worldTransform, const OBBVolume& volume, RayCollision& collision) {
+	return false;
+}
 
+bool CollisionDetection::RaySphereIntersection(const Ray&r, const Transform& worldTransform, const SphereVolume& volume, RayCollision& collision) {
+	return false;
+}
+
+bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, CollisionInfo& collisionInfo) {
+	return false;
+}
+
+bool CollisionDetection::AABBTest(const Vector3& posA, const Vector3& posB, const Vector3& halfSizeA, const Vector3& halfSizeB) {
 	return false;
 }
 
 //AABB/AABB Collisions
 bool CollisionDetection::AABBIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
-	const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) 
-{
-	Vector3 boxAPos = worldTransformA.GetWorldPosition();
-	Vector3 boxBPos = worldTransformB.GetWorldPosition();
-
-	Vector3 boxASize = volumeA.GetHalfDimensions();
-	Vector3 boxBSize = volumeB.GetHalfDimensions();
-
-	bool overlap = AABBTest(boxAPos, boxBPos, boxASize, boxBSize);
-
-	if (overlap)
-	{
-		static const Vector3 faces[6] =
-		{
-			Vector3(-1, 0, 0), Vector3(1, 0, 0),
-			Vector3(0, -1, 0), Vector3(0, 1, 0),
-			Vector3(0, 0, -1), Vector3(0, 0, 1)
-		};
-
-		Vector3 maxA = boxAPos + boxASize;
-		Vector3 minA = boxAPos - boxASize;
-		
-		Vector3 maxB = boxBPos + boxBSize;
-		Vector3 minB = boxBPos - boxBSize;
-
-		float distances[6] =
-		{
-			maxB.x - minA.x, //distance of box b to left of a 
-			maxA.x - minB.x, //distance of box b to right of a 
-			maxB.y - minA.y, //distance of box b to bottom of a 
-			maxA.y - minB.y, //distance of box b to top of a 
-			maxB.z - minA.z, //distance of box b to far of a 
-			maxA.z - minB.z, //distance of box b to near of a 
-		};
-
-		float penetration = FLT_MAX;
-		Vector3 bestAxis;
-
-		for (int i = 0; i < 6; i++)
-		{
-			if (distances[i] < penetration)
-			{
-				penetration = distances[i];
-				bestAxis = faces[i];
-			}
-		}
-
-		collisionInfo.AddContactPoint(Vector3(), Vector3(), bestAxis, penetration);
-		return true;
-	}
+	const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
 	return false;
 }
 
 //Sphere / Sphere Collision
 bool CollisionDetection::SphereIntersection(const SphereVolume& volumeA, const Transform& worldTransformA,
-	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) 
-{
-	float radii = volumeA.GetRadius() + volumeB.GetRadius();
-	Vector3 delta = worldTransformB.GetWorldPosition() - worldTransformA.GetWorldPosition();
-
-	float deltaLength = delta.Length();
-
-	if (deltaLength < radii)
-	{
-		float pentration = radii - deltaLength;
-		Vector3 normal = delta.Normalised();
-		Vector3 localA = normal * volumeA.GetRadius();
-		Vector3 localB = -normal * volumeB.GetRadius();
-
-		collisionInfo.AddContactPoint(localA, localB, normal, pentration);
-		return true; // colliding!!
-	}
-
+	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
 	return false;
 }
 
 //AABB - Sphere Collision
 bool CollisionDetection::AABBSphereIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
-	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) 
-{
-	Vector3 boxSize = volumeA.GetHalfDimensions();
-	Vector3 delta = worldTransformB.GetWorldPosition() - worldTransformA.GetWorldPosition();
-	Vector3 closestPointOnBox = Maths::Clamp(delta, -boxSize, boxSize);
-
-	Vector3 localPoint = delta - closestPointOnBox;
-	float distance = localPoint.Length();
-
-	if (distance < volumeB.GetRadius())
-	{
-		Vector3 collisionNormal = localPoint.Normalised();
-		float penetration = volumeB.GetRadius() - distance;
-
-		Vector3 localA = Vector3();
-		Vector3 localB = -collisionNormal * volumeB.GetRadius();
-
-		collisionInfo.AddContactPoint(localA, localB, collisionNormal, penetration);
-		return true;
-	}
+	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
 	return false;
 }
 
