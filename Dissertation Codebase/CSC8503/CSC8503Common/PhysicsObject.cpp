@@ -17,14 +17,16 @@ PhysicsObject::~PhysicsObject()	{
 
 }
 
-void PhysicsObject::ApplyAngularImpulse(const Vector3& force) {
-	if (force.Length() > 0) {
+void PhysicsObject::ApplyAngularImpulse(const Vector3& force) 
+{
+	/*if (force.Length() > 0) {
 		bool a = true;
-	}
+	}*/
 	angularVelocity += inverseInteriaTensor * force;
 }
 
-void PhysicsObject::ApplyLinearImpulse(const Vector3& force) {
+void PhysicsObject::ApplyLinearImpulse(const Vector3& force) 
+{
 	linearVelocity += force * inverseMass;
 }
 
@@ -32,7 +34,8 @@ void PhysicsObject::AddForce(const Vector3& addedForce) {
 	force += addedForce;
 }
 
-void PhysicsObject::AddForceAtPosition(const Vector3& addedForce, const Vector3& position) {
+void PhysicsObject::AddForceAtPosition(const Vector3& addedForce, const Vector3& position) 
+{
 	Vector3 localPos = position - transform->GetWorldPosition();
 
 	force  += addedForce;

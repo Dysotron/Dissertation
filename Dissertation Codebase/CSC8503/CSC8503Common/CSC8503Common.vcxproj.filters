@@ -123,6 +123,12 @@
     <ClInclude Include="Debug.h">
       <Filter>Other</Filter>
     </ClInclude>
+    <ClInclude Include="BonusItem.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CollisionDetection.cpp">
@@ -198,6 +204,12 @@
       <Filter>Other</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="BonusItem.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Other</Filter>
     </ClCompile>
   </ItemGroup>

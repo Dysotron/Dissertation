@@ -71,6 +71,14 @@ namespace NCL {
 
 			void UpdateMatrices();
 
+			void SetInitialSpawn(const Vector3& pos);
+
+			Vector3 GetInitialSpawn()
+			{
+				//return initialSpawn;
+				return Vector3(100, 5, 100);
+			}
+
 		protected:
 			Matrix4		localMatrix;
 			Matrix4		worldMatrix;
@@ -81,6 +89,8 @@ namespace NCL {
 			Quaternion  worldOrientation;
 
 			Transform*	parent;
+
+			Vector3 initialSpawn;
 
 			vector<Transform*> children;
 		};

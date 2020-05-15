@@ -53,6 +53,31 @@ namespace NCL {
 				std::vector<Constraint*>::const_iterator& first,
 				std::vector<Constraint*>::const_iterator& last) const;
 
+			void AddToScore(int addition)
+			{
+				score += addition;
+			}
+
+			void AddAppleCount()
+			{
+				applesRemaining++;
+			}
+
+			void MinusAppleCount()
+			{
+				applesRemaining--;
+			}
+
+			int GetScore() const
+			{
+				return score;
+			}
+			
+			int GetApplesRemaining() const
+			{
+				return applesRemaining;
+			}
+
 		protected:
 			void UpdateTransforms();
 			void UpdateQuadTree();
@@ -67,6 +92,9 @@ namespace NCL {
 
 			bool shuffleConstraints;
 			bool shuffleObjects;
+
+			int applesRemaining = 0;
+			int score = 0;
 		};
 	}
 }

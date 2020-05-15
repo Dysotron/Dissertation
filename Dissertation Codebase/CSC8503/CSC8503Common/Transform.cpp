@@ -11,6 +11,7 @@ Transform::Transform()
 Transform::Transform(const Vector3& position, Transform* p) {
 	parent = p;
 	SetWorldPosition(position);
+	SetInitialSpawn(position);
 }
 
 Transform::~Transform()
@@ -46,6 +47,12 @@ void Transform::SetWorldPosition(const Vector3& worldPos) {
 
 		worldMatrix.SetPositionVector(worldPos);
 	}
+}
+
+void Transform::SetInitialSpawn(const Vector3& worldPos) 
+{
+	//initialSpawn = worldPos;
+	initialSpawn = Vector3(100, 2, 100);
 }
 
 void Transform::SetLocalPosition(const Vector3& localPos) {

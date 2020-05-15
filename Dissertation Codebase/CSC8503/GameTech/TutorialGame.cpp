@@ -78,6 +78,7 @@ void TutorialGame::UpdateGame(float dt)
 {
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
+	MoveAsteroid();
 
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
@@ -182,7 +183,7 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	float size = 20.0f;
 
 	Vector3 sphereSize = Vector3(size, size, size);
-	SphereVolume* volume = new SphereVolume(size);
+	SphereVolume* volume = new SphereVolume(size * 5);
 	planet->SetBoundingVolume((CollisionVolume*)volume);
 	planet->GetTransform().SetWorldScale(sphereSize);
 	planet->GetTransform().SetWorldPosition(Vector3(0,0,0));
@@ -204,6 +205,15 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	return planet;
 }
 
+void TutorialGame::MoveAsteroid()
+{
+	Vector3 pos = asteroid->GetTransform().GetWorldPosition();
 
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::I))
+	{
+		pos.x -= 10;
+		asteroid->GetTransform().SetWorldPosition(pos);
+	}
+}
 
 
