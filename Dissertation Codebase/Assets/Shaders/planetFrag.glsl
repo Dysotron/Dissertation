@@ -98,6 +98,13 @@ float TextureMixing()
 
 void main(void) 
 {	
+	float shadow = 1.0;
+	
+	if( IN.shadowProj.w > 0.0) 
+	{
+		shadow = textureProj(shadowTex , IN.shadowProj) * 0.5f;
+	}
+
 	float power = TextureMixing();
 
 	vec4 diffuse = fragColor;
@@ -114,8 +121,22 @@ void main(void)
 	float rFactor = max(0.0, dot(halfDir, IN.normal));
 	float sFactor = pow(rFactor, power);
 
-	vec3 colour = (diffuse.rgb * lightColour.rgb);
+	/*vec3 colour = (diffuse.rgb * lightColour.rgb);
 	colour += (lightColour.rgb * sFactor) * 0.33;
-	fragColor = vec4(colour * atten * lambert, diffuse.a);
-	fragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.2;
+	fragColor = vec4(colour * atten * lambert * shadow, diffuse.a);
+	fragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.2;*/
+
+	vec4 albedo = fragColor;
+
+	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+	
+	fragColor.rgb = albedo.rgb * 0.2f; //ambient
+	
+	fragColor.rgb += albedo.rgb * lightColour.rgb * lambert * atten; //diffuse light
+	
+	fragColor.rgb += lightColour.rgb * sFactor * shadow; //specular light
+	
+	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
+	
+	fragColor.a = albedo.a;
 }

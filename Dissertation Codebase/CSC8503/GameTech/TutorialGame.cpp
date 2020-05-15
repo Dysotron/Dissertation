@@ -49,13 +49,15 @@ void TutorialGame::InitialiseAssets()
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicShadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
 
 	grassTexture = (OGLTexture*)TextureLoader::LoadAPITexture("grass.jpg");
 	snowTexture = (OGLTexture*)TextureLoader::LoadAPITexture("snow.jpg");
 	waterTexture = (OGLTexture*)TextureLoader::LoadAPITexture("water.jpg");
 	sandTexture = (OGLTexture*)TextureLoader::LoadAPITexture("sand.jpg");
 	rockTexture = (OGLTexture*)TextureLoader::LoadAPITexture("rock.jpg");
-	planetShader = new OGLShader("tessVert.glsl", "displaceFrag.glsl", "", "sphereTCS.glsl", "sphereTES.glsl");
+	planetShader = new OGLShader("planetVert.glsl", "planetFrag.glsl", "", "planetTCS.glsl", "planetTES.glsl");
+	planetShadowShader = new OGLShader("shadowPlanetVert.glsl", "shadowPlanetFrag.glsl", "", "shadowPlanetTCS.glsl", "shadowPlanetTES.glsl");
 
 	InitCamera();
 	InitWorld();
@@ -357,7 +359,8 @@ void TutorialGame::InitWorld()
 	world->ClearAndErase();
 	physics->Clear();
 
-	AddSphereToWorld(Vector3(100, 0, 0), 20);
+	AddSphereToWorld(Vector3(30, 0, 0), 5);
+
 	AddPlanetToWorld();
 }
 
@@ -375,7 +378,10 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 	sphere->GetTransform().SetWorldScale(sphereSize);
 	sphere->GetTransform().SetWorldPosition(position);
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+	RenderObject* rObj = new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader);
+	rObj->SetShadowShader(basicShadowShader);
+
+	sphere->SetRenderObject(rObj);
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -403,6 +409,7 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	rObj->SetTexture(waterTexture, 2);
 	rObj->SetTexture(sandTexture, 3);
 	rObj->SetTexture(rockTexture, 4);
+	rObj->SetShadowShader(planetShadowShader);
 	planet->SetRenderObject(rObj);
 	planet->SetPhysicsObject(new PhysicsObject(&planet->GetTransform(), planet->GetBoundingVolume()));
 
@@ -412,103 +419,6 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	world->AddGameObject(planet);
 
 	return planet;
-}
-
-OGLMesh* TutorialGame::CreatePlanetMesh()
-{
-	float length = 100;
-	float elevation = sqrt((length * length) - ((length / 2) * (length / 2)));
-	Vector3 octaVert[6];
-
-
-	//vertices needed to construct octahedron
-	octaVert[0] = Vector3(-length / 2, 0, 0);
-	octaVert[1] = Vector3(length / 2, 0, 0);
-	octaVert[2] = Vector3(-length / 2, 0, length);
-	octaVert[3] = Vector3(length / 2, 0, length);
-	octaVert[4] = Vector3(0, elevation, length / 2);
-	octaVert[5] = Vector3(0, -elevation, length / 2);
-
-	Vector3 middle = (octaVert[4] + octaVert[5]) / 2;
-
-	std::vector < Vector3 > verts;
-
-	//back top
-	verts.emplace_back(octaVert[0]);
-	verts.emplace_back(octaVert[4]);
-	verts.emplace_back(octaVert[1]);
-
-	//front top
-	verts.emplace_back(octaVert[2]);
-	verts.emplace_back(octaVert[3]);
-	verts.emplace_back(octaVert[4]);
-
-	//right top
-	verts.emplace_back(octaVert[1]);
-	verts.emplace_back(octaVert[4]);
-	verts.emplace_back(octaVert[3]);
-
-	//left top
-	verts.emplace_back(octaVert[0]);
-	verts.emplace_back(octaVert[2]);
-	verts.emplace_back(octaVert[4]);
-
-	//back bottom
-	verts.emplace_back(octaVert[0]);
-	verts.emplace_back(octaVert[1]);
-	verts.emplace_back(octaVert[5]);
-
-	//front bottom
-	verts.emplace_back(octaVert[2]);
-	verts.emplace_back(octaVert[5]);
-	verts.emplace_back(octaVert[3]);
-
-	//right bottom
-	verts.emplace_back(octaVert[1]);
-	verts.emplace_back(octaVert[3]);
-	verts.emplace_back(octaVert[5]);
-
-	//left bottom
-	verts.emplace_back(octaVert[0]);
-	verts.emplace_back(octaVert[5]);
-	verts.emplace_back(octaVert[2]);
-
-	std::vector < Vector3 > normals;
-
-	for (int i = 0; i < verts.size(); i++) //replace this with calculations, create triangle around vertex, use to calculate normals, should give same values
-	{
-		Vector3& a = verts[i];
-		Vector3 normal;
-
-		normal = verts[i] - middle; //direction vector between middle and vertex
-		normals.emplace_back(normal);
-	}
-
-	std::vector < Vector2 > texCoords;
-
-	for (int i = 0; i < 8; i++)
-	{
-		texCoords.push_back(Vector2(0, 1));
-		texCoords.push_back(Vector2(1, 1));
-		texCoords.push_back(Vector2(0.5, 0));
-	}
-
-	std::vector < Vector4 > white;
-
-	for (int i = 0; i < 24; i++)
-	{
-		white.push_back(Vector4(1, 1, 1, 1));
-	}
-
-	OGLMesh* top = new OGLMesh(); //top half
-	top->SetVertexPositions(verts);
-	top->SetVertexNormals(normals);
-	top->SetVertexColours(white);
-	top->SetVertexTextureCoords(texCoords);
-	top->SetPrimitiveType(GeometryPrimitive::Triangles);
-	top->UploadToGPU();
-
-	return top;
 }
 
 

@@ -14,8 +14,6 @@ Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Sca
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world)	{
 	glEnable(GL_DEPTH_TEST);
 
-	shadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
-
 	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -39,7 +37,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	//Set up the light properties
 	lightColour = Vector4(252.0f / 255.0f, 254.0f / 255.0f, 196.0f / 255.0f, 0.1f);
 	lightRadius = 500.0f;
-	lightPosition = Vector3(100.0f, 0.0f, 0.0f);
+	lightPosition = Vector3(100.0f, 50.0f, 0.0f);
 }
 
 GameTechRenderer::~GameTechRenderer()	{
@@ -87,17 +85,19 @@ void GameTechRenderer::RenderShadowMap() {
 
 	glCullFace(GL_FRONT);
 
-	BindShader(shadowShader);
-	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
+	for (const auto&i : activeObjects) 
+	{
+		OGLShader* shader = (OGLShader*)(*i).GetShadowShader();
+		BindShader(shader);
+		int mvpLocation = glGetUniformLocation(shader->GetProgramID(), "mvpMatrix");
 
-	Matrix4 shadowViewMatrix = Matrix4::BuildViewMatrix(lightPosition, Vector3(0, 0, 0), Vector3(0,1,0));
-	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 500.0f, 1, 45.0f);
+		Matrix4 shadowViewMatrix = Matrix4::BuildViewMatrix(lightPosition, Vector3(0, 0, 0), Vector3(0, 1, 0));
+		Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 500.0f, 1, 45.0f);
 
-	Matrix4 mvMatrix = shadowProjMatrix * shadowViewMatrix;
+		Matrix4 mvMatrix = shadowProjMatrix * shadowViewMatrix;
 
-	shadowMatrix = biasMatrix * mvMatrix; //we'll use this one later on
+		shadowMatrix = biasMatrix * mvMatrix; //we'll use this one later on
 
-	for (const auto&i : activeObjects) {
 		Matrix4 modelMatrix = (*i).GetTransform()->GetWorldMatrix();
 		Matrix4 mvpMatrix	= mvMatrix * modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
@@ -133,17 +133,12 @@ void GameTechRenderer::RenderCamera() {
 	int cameraLocation = 0;
 
 	//TODO - PUT IN FUNCTION
-	glActiveTexture(GL_TEXTURE0 + 1);
+	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 
 	for (const auto&i : activeObjects) {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
-
-		/*for (int j = 0; j < 10; j++)
-		{
-			BindTextureToShader((OGLTexture*)(*i).GetTexture(j), "texture" + j, j);
-		}*/
 
 		BindTextureToShader((OGLTexture*)(*i).GetTexture(0), "texture0", 0);
 		BindTextureToShader((OGLTexture*)(*i).GetTexture(1), "texture1", 1);
@@ -176,7 +171,7 @@ void GameTechRenderer::RenderCamera() {
 			glUniform1f(lightRadiusLocation , lightRadius);
 
 			int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
-			glUniform1i(shadowTexLocation, 1);
+			glUniform1i(shadowTexLocation, 5);
 
 			activeShader = shader;
 		}

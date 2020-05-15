@@ -31,7 +31,6 @@ namespace NCL
 
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
 			GameObject* AddPlanetToWorld();
-			OGLMesh* CreatePlanetMesh();
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;
@@ -49,6 +48,8 @@ namespace NCL
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
 			OGLShader* planetShader = nullptr;
+			OGLShader* planetShadowShader = nullptr;
+			OGLShader* basicShadowShader = nullptr;
 
 			OGLTexture* grassTexture = nullptr;
 			OGLTexture* snowTexture = nullptr;

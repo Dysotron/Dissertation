@@ -37,6 +37,15 @@ namespace NCL {
 			ShaderBase*		GetShader() const {
 				return shader;
 			}
+			
+			ShaderBase*		GetShadowShader() const {
+				return shadowShader;
+			}
+
+			void SetShadowShader(ShaderBase* shader)
+			{
+				shadowShader = shader;
+			}
 
 			void SetColour(const Vector4& c) {
 				colour = c;
@@ -50,6 +59,7 @@ namespace NCL {
 			MeshGeometry*	mesh;
 			TextureBase*	texture[10];
 			ShaderBase*		shader;
+			ShaderBase*		shadowShader;
 			Transform*		transform;
 			Vector4			colour;
 		};
