@@ -148,10 +148,6 @@ void TutorialGame::InitWorld()
 	planet = AddPlanetToWorld();
 }
 
-//From here on it's functions to add in objects to the world!
-
-
-
 GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass)
 {
 	GameObject* sphere = new GameObject();
