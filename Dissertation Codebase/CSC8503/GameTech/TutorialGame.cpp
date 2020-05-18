@@ -144,6 +144,7 @@ void TutorialGame::InitWorld()
 	physics->Clear();
 
 	asteroid = AddSphereToWorld(Vector3(300, -100, 20), 5);
+	//asteroid = AddSphereToWorld(Vector3(18.9, -6.3, 1.3), 5);
 
 	planet = AddPlanetToWorld();
 }
