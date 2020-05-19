@@ -91,6 +91,7 @@ int main() {
 	int frame[60];
 
 	bool written = false; //whether data has been written to file or not
+	bool statStart = false; //whether data collection has begun
 
 	CurrentCPUInit();
 
@@ -107,6 +108,11 @@ int main() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NEXT)) {
 			w->ShowConsole(false);
 		}
+		
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RETURN)) 
+		{
+			statStart = true;
+		}
 
 		w->SetTitle("Max Dyson - Dissertation");
 
@@ -114,7 +120,7 @@ int main() {
 
 		intervalProgress += dt;
 
-		if (periodProgress < PERIOD)
+		if (periodProgress < PERIOD && statStart)
 		{
 			if (intervalProgress >= INTERVAL)
 			{
@@ -132,13 +138,13 @@ int main() {
 				DWORDLONG totalPhysMem = memInfo.ullTotalPhys;
 
 				//using ints to get round figures
-				int physMemPercent = physMemUsedByMe / totalPhysMem;
-				int virtualMemPercent = virtualMemUsedByMe / totalVirtualMem;
+				physMemUsedByMe /= 1048576;
+				virtualMemUsedByMe /= 1048576;
 				int framerate = 1 / dt;
 				int cpuPercent = GetCurrentCPU();
 
-				phys[periodProgress] = physMemPercent;
-				virt[periodProgress] = virtualMemPercent;
+				phys[periodProgress] = physMemUsedByMe;
+				virt[periodProgress] = virtualMemUsedByMe;
 				frame[periodProgress] = framerate;
 				cpu[periodProgress] = cpuPercent;
 
@@ -147,17 +153,28 @@ int main() {
 			}
 		}
 
-		else if(!written)
+		else if(!written && periodProgress == 60)
 		{
 			written = true;
 			std::ofstream frameFile("framerate.txt");
-			if (frameFile.is_open())
+			std::ofstream cpuFile("CPU.txt");
+			std::ofstream physFile("phys.txt");
+			std::ofstream virtFile("virt.txt");
+			if (frameFile.is_open() && cpuFile.is_open() && physFile.is_open() && virtFile.is_open())
 			{
 				for (int i = 0; i < PERIOD; i++)
 				{
 					frameFile << frame[i] << std::endl;
+					cpuFile << cpu[i] << std::endl;
+					physFile << phys[i] << std::endl;
+					virtFile << virt[i] << std::endl;
 				}
 				frameFile.close();
+				cpuFile.close();
+				physFile.close();
+				virtFile.close();
+
+				std::cout << "data written to file\n";
 			}
 			else std::cout << "Unable to open file";
 		}
