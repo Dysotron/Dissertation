@@ -11,8 +11,11 @@
 
 #include "TutorialGame.h"
 
-//stats stuff
+//stats stuff - https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 #include "psapi.h"
+
+#include <iostream>
+#include <fstream>
 
 using namespace NCL;
 using namespace CSC8503;
@@ -87,6 +90,8 @@ int main() {
 	int phys[60];
 	int frame[60];
 
+	bool written = false; //whether data has been written to file or not
+
 	CurrentCPUInit();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
@@ -142,9 +147,19 @@ int main() {
 			}
 		}
 
-		else //past period
+		else if(!written)
 		{
-			//write data to files
+			written = true;
+			std::ofstream frameFile("framerate.txt");
+			if (frameFile.is_open())
+			{
+				for (int i = 0; i < PERIOD; i++)
+				{
+					frameFile << frame[i] << std::endl;
+				}
+				frameFile.close();
+			}
+			else std::cout << "Unable to open file";
 		}
 	}
 	Window::DestroyGameWindow();
