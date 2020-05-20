@@ -23,6 +23,7 @@ namespace NCL {
 			Vector3 localB;
 			Vector3 normal;
 			float	penetration;
+			Vector3 cartesian;
 		};
 		struct CollisionInfo {
 			GameObject* a;
@@ -31,11 +32,13 @@ namespace NCL {
 
 			ContactPoint point;
 
-			void AddContactPoint(const Vector3& localA, const Vector3& localB, const Vector3& normal, float p) {
+			void AddContactPoint(const Vector3& localA, const Vector3& localB, const Vector3& normal, float p, const Vector3& cartesian = Vector3() ) 
+			{
 				point.localA		= localA;
 				point.localB		= localB;
 				point.normal		= normal;
 				point.penetration	= p;
+				point.cartesian = cartesian;
 			}
 
 			//Advanced collision detection / resolution

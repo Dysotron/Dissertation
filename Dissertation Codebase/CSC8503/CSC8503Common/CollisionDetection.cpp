@@ -280,9 +280,9 @@ bool CollisionDetection::SphereIntersection(const SphereVolume& volumeA, const T
 		Vector3 normal = delta.Normalised();
 		Vector3 localA = normal * volumeA.GetRadius();
 		Vector3 localB = -normal * volumeB.GetRadius();
+		Vector3 cartesian = localA + worldTransformA.GetWorldPosition();
 
-		collisionInfo.AddContactPoint(localA, localB, normal, pentration);
-		std::cout << localA  + worldTransformA.GetWorldPosition() << std::endl;
+		collisionInfo.AddContactPoint(localA, localB, normal, pentration, cartesian);
 		return true; // colliding!!
 	}
 

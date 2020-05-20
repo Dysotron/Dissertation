@@ -26,6 +26,19 @@ namespace NCL
 				globalDamping = d;
 			}
 
+			CollisionDetection::CollisionInfo GetCollision()
+			{
+				if (!allCollisions.empty())
+				{
+					auto first = allCollisions.begin();
+					return *first;
+				}
+
+				CollisionDetection::CollisionInfo first;
+
+				return first;
+			}
+
 			void SetGravity(const Vector3& g);
 		protected:
 			void BasicCollisionDetection();

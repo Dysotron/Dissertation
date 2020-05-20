@@ -84,6 +84,13 @@ void TutorialGame::UpdateGame(float dt)
 	renderer->Update(dt);
 	physics->Update(dt);
 
+	CollisionDetection::CollisionInfo collision = physics->GetCollision();
+
+	if (collision.point.penetration > 0)
+	{
+		std::cout << collision.point.cartesian << std::endl;
+	}
+
 	Debug::FlushRenderables();
 	renderer->Render();
 }
