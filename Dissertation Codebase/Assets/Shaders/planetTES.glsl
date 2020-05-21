@@ -5,6 +5,7 @@ layout(triangles, ccw) in;
 uniform sampler2D mainTex;
 uniform sampler2D secondTex;
 uniform float time ;
+uniform float asteroidSize;
 
 uniform vec3 collisionPos;
 
@@ -181,7 +182,7 @@ void main ()
 
 	float distance  = sqrt(pow(worldPos.x - collisionPos.x, 2) + pow(worldPos.y - collisionPos.y, 2) + pow(worldPos.z - collisionPos.z, 2));
 
-	if(distance < 10 && collisionPos != vec3(0,0,0))
+	if(distance < asteroidSize && collisionPos != vec3(0,0,0))
 	{
 		if(distance < 2)
 		{

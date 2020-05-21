@@ -22,6 +22,11 @@ namespace NCL {
 				collisionCartesian = coord;
 			}
 
+			void SetAsteroidSize(float size)
+			{
+				asteroidSize = size;
+			}
+
 		protected:
 			void RenderFrame()	override;
 
@@ -50,6 +55,7 @@ namespace NCL {
 
 
 			Vector3 collisionCartesian;
+			float asteroidSize;
 		};
 	}
 }

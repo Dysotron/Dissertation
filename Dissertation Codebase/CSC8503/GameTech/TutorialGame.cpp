@@ -16,6 +16,8 @@ TutorialGame::TutorialGame()
 	renderer = new GameTechRenderer(*world);
 	physics = new PhysicsSystem(*world);
 
+	renderer->SetAsteroidSize(asteroidSize);
+
 	forceMagnitude = 10.0f;
 	useGravity = false;
 	inSelectionMode = false;
@@ -79,7 +81,18 @@ void TutorialGame::UpdateGame(float dt)
 {
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
-	MoveAsteroid();
+
+	if (statStart)
+	{
+		timePassed += dt;
+	}
+
+	if (timePassed > 20 && !asteroidFired)
+	{
+		MoveAsteroid();
+		asteroidFired = true;
+	}
+	
 
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
@@ -136,6 +149,11 @@ void TutorialGame::UpdateKeys()
 	{
 		world->ShuffleObjects(false);
 	}
+	
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RETURN))
+	{
+		statStart = true;
+	}
 }
 
 void TutorialGame::InitCamera()
@@ -152,9 +170,9 @@ void TutorialGame::InitWorld()
 	world->ClearAndErase();
 	physics->Clear();
 
-	asteroid = AddSphereToWorld(Vector3(-300, 100, 20), 5);
-	//asteroid = AddSphereToWorld(Vector3(300, 100, 20), 5);
-	//asteroid = AddSphereToWorld(Vector3(0, 100, 20), 5);
+	asteroid = AddSphereToWorld(Vector3(-200, 67, 20), asteroidSize);
+	//asteroid = AddSphereToWorld(Vector3(200, 67, 20), asteroidSize);
+	//asteroid = AddSphereToWorld(Vector3(0, 100, 20), asteroidSize);
 
 	planet = AddPlanetToWorld();
 }
@@ -221,10 +239,7 @@ void TutorialGame::MoveAsteroid()
 	Vector3 direction = planetPos - asteroidPos;
 	direction.Normalise();
 
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::I))
-	{
-		asteroid->GetPhysicsObject()->AddForce(direction * 10000);
-	}
+	asteroid->GetPhysicsObject()->AddForce(direction * 10000);
 }
 
 

@@ -55,6 +55,12 @@ namespace NCL
 			OGLTexture* sandTexture = nullptr;
 			OGLTexture* rockTexture = nullptr;
 			OGLTexture* altRockTexture = nullptr;
+
+			float timePassed;
+			bool statStart = false;
+			bool asteroidFired = false;
+
+			float asteroidSize = 5.0f;
 		};
 	}
 }

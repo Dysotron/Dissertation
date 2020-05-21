@@ -117,6 +117,7 @@ int main() {
 		w->SetTitle("Max Dyson - Dissertation");
 
 		g->UpdateGame(dt);
+		
 
 		intervalProgress += dt;
 

@@ -134,6 +134,8 @@ void GameTechRenderer::RenderCamera() {
 
 	int collisionLocation = 0;
 
+	int asteroidSizeLocation = 0;
+
 	//TODO - PUT IN FUNCTION
 	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
@@ -164,6 +166,7 @@ void GameTechRenderer::RenderCamera() {
 			lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 
 			collisionLocation = glGetUniformLocation(shader->GetProgramID(), "collisionPos");
+			asteroidSizeLocation = glGetUniformLocation(shader->GetProgramID(), "asteroidSize");
 
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 			glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
@@ -176,6 +179,7 @@ void GameTechRenderer::RenderCamera() {
 			glUniform1f(lightRadiusLocation , lightRadius);
 
 			glUniform3fv(collisionLocation, 1, (float*)&collisionCartesian);
+			glUniform1f(asteroidSizeLocation, asteroidSize);
 
 			int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
 			glUniform1i(shadowTexLocation, 5);
