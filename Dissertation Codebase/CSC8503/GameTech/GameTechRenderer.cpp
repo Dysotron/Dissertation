@@ -37,7 +37,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	//Set up the light properties
 	lightColour = Vector4(252.0f / 255.0f, 254.0f / 255.0f, 196.0f / 255.0f, 0.1f);
 	lightRadius = 500.0f;
-	lightPosition = Vector3(100.0f, 50.0f, 0.0f);
+	lightPosition = Vector3(-100.0f, 50.0f, 0.0f);
 }
 
 GameTechRenderer::~GameTechRenderer()	{
@@ -132,8 +132,10 @@ void GameTechRenderer::RenderCamera() {
 
 	int cameraLocation = 0;
 
+	int collisionLocation = 0;
+
 	//TODO - PUT IN FUNCTION
-	glActiveTexture(GL_TEXTURE5);
+	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 
 	for (const auto&i : activeObjects) {
@@ -145,6 +147,7 @@ void GameTechRenderer::RenderCamera() {
 		BindTextureToShader((OGLTexture*)(*i).GetTexture(2), "texture2", 2);
 		BindTextureToShader((OGLTexture*)(*i).GetTexture(3), "texture3", 3);
 		BindTextureToShader((OGLTexture*)(*i).GetTexture(4), "texture4", 4);
+		BindTextureToShader((OGLTexture*)(*i).GetTexture(5), "texture5", 5);
 		
 
 		if (activeShader != shader) {
@@ -160,6 +163,8 @@ void GameTechRenderer::RenderCamera() {
 			lightColourLocation = glGetUniformLocation(shader->GetProgramID(), "lightColour");
 			lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 
+			collisionLocation = glGetUniformLocation(shader->GetProgramID(), "collisionPos");
+
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 			glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
 
@@ -169,6 +174,8 @@ void GameTechRenderer::RenderCamera() {
 			glUniform3fv(lightPosLocation	, 1, (float*)&lightPosition);
 			glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
 			glUniform1f(lightRadiusLocation , lightRadius);
+
+			glUniform3fv(collisionLocation, 1, (float*)&collisionCartesian);
 
 			int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
 			glUniform1i(shadowTexLocation, 5);

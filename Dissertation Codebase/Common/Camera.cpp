@@ -64,7 +64,7 @@ void Camera::UpdateCamera(float dt) {
 	{
 		keySensitivity = 50;
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM4))
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::H))
 	{
 		keySensitivity = 25;
 	}

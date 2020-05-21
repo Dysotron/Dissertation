@@ -6,10 +6,15 @@ uniform sampler2D mainTex;
 uniform sampler2D secondTex;
 uniform float time ;
 
+uniform vec3 collisionPos;
+
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 uniform mat4 shadowMatrix;
+
+float radius = 1;
+bool noise = true;
 
 in Vertex // Sent from the TCS
 { 
@@ -28,6 +33,9 @@ out Vertex // Each TES works on a single vertex !
 	vec3 worldPos;
 	float terrainNoise;
 	vec4 shadowProj;
+	bool crater;
+	float craterDepth;
+	float craterNoise;
 } OUT;
 
 vec3 permute(vec3 x) 
@@ -103,7 +111,12 @@ vec3 normaliseVector3(vec3 vector)
 {
 	float value = GenerateNoiseValue(vector);
 	OUT.height = value;
-	float radius = 1 + value;
+
+	if(noise)
+	{
+		radius += value;
+	}
+	
 	
 	float dx = vector.x - 0;
 	float dy = vector.y - 0;
@@ -158,51 +171,53 @@ void main ()
 	vec2 p5 = gl_TessCoord.z * IN[2].texCoord;
 	OUT.texCoord = (p3 + p4 + p5) * 20;
 	
-	/*vec2 p3 = IN[0].texCoord;
-	vec2 p4 = IN[1].texCoord;
-	vec2 p5 = IN[2].texCoord;
-	OUT.texCoord = p3 + p4 + p5;*/
-	
 	vec3 p0 = gl_TessCoord.x * gl_in[0].gl_Position.xyz;
 	vec3 p1 = gl_TessCoord.y * gl_in[1].gl_Position.xyz;
 	vec3 p2 = gl_TessCoord.z * gl_in[2].gl_Position.xyz;
 	
 	vec3 combinedPos = p0 + p1 + p2;
 
+	vec4 worldPos = modelMatrix * vec4(combinedPos, 1.0);
+
+	float distance  = sqrt(pow(worldPos.x - collisionPos.x, 2) + pow(worldPos.y - collisionPos.y, 2) + pow(worldPos.z - collisionPos.z, 2));
+
+	if(distance < 10 && collisionPos != vec3(0,0,0))
+	{
+		if(distance < 2)
+		{
+			distance = 2;
+		}
+
+		OUT.crater = true;
+		float crater = 1 / distance;
+
+		OUT.craterDepth = crater;
+		radius -= crater;
+
+		float craterNoise = sNoise(vec2(combinedPos.x + combinedPos.y, combinedPos.z)) / 5;
+		OUT.craterNoise = craterNoise;
+
+		radius += craterNoise;
+
+		noise  = false;
+	}
+
+	else
+	{
+		OUT.crater = false;
+	}
+
 	OUT.terrainNoise = sNoise(vec2(combinedPos.x + combinedPos.y, combinedPos.z));
 
 
-	//get into spherical coordinates
-	vec3 aSpherical = CartesianToSpherical(combinedPos);
-
-	//get nearby points on sphere
-	float adjustment = 0.00001f;
-	vec3 bSpherical = vec3(aSpherical.x, aSpherical.y + adjustment, aSpherical.z);
-	vec3 cSpherical = vec3(aSpherical.x, aSpherical.y, aSpherical.z + adjustment);
-
-	//translate back to cartesian
-	vec3 bCartesian = SphericalToCartesian(bSpherical);
-	vec3 cCartesian = SphericalToCartesian(cSpherical);
-
-	//so that noise values can be generated
-	float bNoise = GenerateNoiseValue(bCartesian);
-	float cNoise = GenerateNoiseValue(cCartesian);
-
-	//apply noise to radius
-	bSpherical.x += bNoise;
-	cSpherical.x += cNoise;
-
-	//translate back to get real position of nearby points after noise applied
-	bCartesian = SphericalToCartesian(bSpherical);
-	cCartesian = SphericalToCartesian(cSpherical);
+	
 
 	//add noise to original point
 	combinedPos = normaliseVector3(combinedPos);
+	
 
-	vec4 worldPos = modelMatrix * vec4(combinedPos, 1.0);
+	worldPos = modelMatrix * vec4(combinedPos, 1.0);
 	OUT.worldPos = worldPos.xyz;
-
-	OUT.normal = GenerateSurfaceNormal(combinedPos, bCartesian, cCartesian);
 	
 	
 	vec4 p6 = gl_TessCoord.x * IN[0].colour;

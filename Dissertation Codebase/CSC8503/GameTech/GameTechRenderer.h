@@ -17,6 +17,11 @@ namespace NCL {
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
 
+			void SetCollisionCartesian(Vector3 coord)
+			{
+				collisionCartesian = coord;
+			}
+
 		protected:
 			void RenderFrame()	override;
 
@@ -42,6 +47,9 @@ namespace NCL {
 			Vector4		lightColour;
 			float		lightRadius;
 			Vector3		lightPosition;
+
+
+			Vector3 collisionCartesian;
 		};
 	}
 }

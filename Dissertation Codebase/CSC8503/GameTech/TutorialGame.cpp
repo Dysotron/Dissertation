@@ -56,6 +56,7 @@ void TutorialGame::InitialiseAssets()
 	waterTexture = (OGLTexture*)TextureLoader::LoadAPITexture("water.jpg");
 	sandTexture = (OGLTexture*)TextureLoader::LoadAPITexture("sand.jpg");
 	rockTexture = (OGLTexture*)TextureLoader::LoadAPITexture("rock.jpg");
+	altRockTexture = (OGLTexture*)TextureLoader::LoadAPITexture("altRock.jpg");
 	planetShader = new OGLShader("planetVert.glsl", "planetFrag.glsl", "", "planetTCS.glsl", "planetTES.glsl");
 	planetShadowShader = new OGLShader("shadowPlanetVert.glsl", "shadowPlanetFrag.glsl", "", "shadowPlanetTCS.glsl", "shadowPlanetTES.glsl");
 
@@ -86,9 +87,10 @@ void TutorialGame::UpdateGame(float dt)
 
 	CollisionDetection::CollisionInfo collision = physics->GetCollision();
 
-	if (collision.point.penetration > 0)
+	if (collision.point.penetration > 0) //real collision and not empty
 	{
-		std::cout << collision.point.cartesian << std::endl;
+		//pass to renderer so can become uniform
+		renderer->SetCollisionCartesian(collision.point.cartesian);
 	}
 
 	Debug::FlushRenderables();
@@ -150,8 +152,9 @@ void TutorialGame::InitWorld()
 	world->ClearAndErase();
 	physics->Clear();
 
-	asteroid = AddSphereToWorld(Vector3(300, -100, 20), 5);
-	//asteroid = AddSphereToWorld(Vector3(18.9, -6.3, 1.3), 5);
+	asteroid = AddSphereToWorld(Vector3(-300, 100, 20), 5);
+	//asteroid = AddSphereToWorld(Vector3(300, 100, 20), 5);
+	//asteroid = AddSphereToWorld(Vector3(0, 100, 20), 5);
 
 	planet = AddPlanetToWorld();
 }
@@ -197,6 +200,7 @@ GameObject* TutorialGame::AddPlanetToWorld()
 	rObj->SetTexture(waterTexture, 2);
 	rObj->SetTexture(sandTexture, 3);
 	rObj->SetTexture(rockTexture, 4);
+	rObj->SetTexture(altRockTexture, 5);
 	rObj->SetShadowShader(planetShadowShader);
 	planet->SetRenderObject(rObj);
 	planet->SetPhysicsObject(new PhysicsObject(&planet->GetTransform(), planet->GetBoundingVolume()));

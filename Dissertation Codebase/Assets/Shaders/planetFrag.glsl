@@ -4,8 +4,7 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform sampler2D texture3;
 uniform sampler2D texture4;
-
-uniform sampler2DShadow shadowTex;
+uniform sampler2D texture5;
 
 uniform vec3 cameraPos;
 uniform vec3 lightPos;
@@ -22,6 +21,9 @@ in Vertex
 	vec3 worldPos;
 	float terrainNoise;
 	vec4 shadowProj;
+	bool crater;
+	float craterDepth;
+	float craterNoise;
 } IN;
 
 out vec4 fragColor;
@@ -96,16 +98,42 @@ float TextureMixing()
 		return power;
 }
 
+float CraterTextureMixing()
+{
+	float power = 1.0f;
+
+	//mix textures based on the normal value
+	vec4 grass = texture ( texture0 , IN.texCoord /20);
+	vec4 altRock = texture ( texture5 , IN.texCoord /20);
+	vec4 rock = texture ( texture4 , IN.texCoord);
+
+	float sandPower = 2.0f;
+	float rockPower = 10.0f;
+
+	vec4 baseTex = mix(rock, altRock, grass.r);
+	float basePower = mix(sandPower, rockPower, grass.g);
+
+		
+	fragColor = mix(baseTex, altRock, IN.craterNoise * 5);
+	power = basePower;
+
+	return power;
+}
+
 void main(void) 
 {	
-	float shadow = 1.0;
-	
-	if( IN.shadowProj.w > 0.0) 
+	float power;
+
+	if(IN.crater)
 	{
-		shadow = textureProj(shadowTex , IN.shadowProj) * 0.5f;
+		power = CraterTextureMixing();
 	}
 
-	float power = TextureMixing();
+	else
+	{
+		power = TextureMixing();
+	}
+	
 
 	vec4 diffuse = fragColor;
 
@@ -121,22 +149,8 @@ void main(void)
 	float rFactor = max(0.0, dot(halfDir, IN.normal));
 	float sFactor = pow(rFactor, power);
 
-	/*vec3 colour = (diffuse.rgb * lightColour.rgb);
+	vec3 colour = (diffuse.rgb * lightColour.rgb);
 	colour += (lightColour.rgb * sFactor) * 0.33;
-	fragColor = vec4(colour * atten * lambert * shadow, diffuse.a);
-	fragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.2;*/
-
-	vec4 albedo = fragColor;
-
-	albedo.rgb = pow(albedo.rgb, vec3(2.2));
-	
-	fragColor.rgb = albedo.rgb * 0.2f; //ambient
-	
-	fragColor.rgb += albedo.rgb * lightColour.rgb * lambert * atten; //diffuse light
-	
-	fragColor.rgb += lightColour.rgb * sFactor * shadow; //specular light
-	
-	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
-	
-	fragColor.a = albedo.a;
+	fragColor = vec4(colour * atten * lambert, diffuse.a);
+	fragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.2;
 }

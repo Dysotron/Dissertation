@@ -54,6 +54,7 @@ namespace NCL
 			OGLTexture* waterTexture = nullptr;
 			OGLTexture* sandTexture = nullptr;
 			OGLTexture* rockTexture = nullptr;
+			OGLTexture* altRockTexture = nullptr;
 		};
 	}
 }
