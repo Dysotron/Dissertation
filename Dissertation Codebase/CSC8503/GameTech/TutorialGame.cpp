@@ -16,6 +16,9 @@ TutorialGame::TutorialGame()
 	renderer = new GameTechRenderer(*world);
 	physics = new PhysicsSystem(*world);
 
+	world->GetMainCamera()->SetPosition(Vector3(0, 0, 70));
+	world->GetMainCamera()->SetYaw(-30);
+
 	renderer->SetAsteroidSize(asteroidSize);
 
 	forceMagnitude = 10.0f;
@@ -85,6 +88,8 @@ void TutorialGame::UpdateGame(float dt)
 	if (statStart)
 	{
 		timePassed += dt;
+		world->GetMainCamera()->SetPosition(Vector3(0, 0, 70));
+		world->GetMainCamera()->SetYaw(-30);
 	}
 
 	if (timePassed > 20 && !asteroidFired)

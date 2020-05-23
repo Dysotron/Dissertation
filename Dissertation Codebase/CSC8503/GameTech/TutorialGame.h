@@ -60,7 +60,7 @@ namespace NCL
 			bool statStart = false;
 			bool asteroidFired = false;
 
-			float asteroidSize = 5.0f;
+			float asteroidSize = 10.0f;
 		};
 	}
 }

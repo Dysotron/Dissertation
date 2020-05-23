@@ -132,28 +132,6 @@ vec3 normaliseVector3(vec3 vector)
 	return vec3(dx, dy, dz);
 }
 
-vec3 CartesianToSpherical(vec3 coord)
-{
-	float r = sqrt((coord.x * coord.x) + (coord.y * coord.y) + (coord.z * coord.z));
-	float theta = atan(coord.y / coord.x);
-	float phi = atan(sqrt((coord.x * coord.x) + (coord.y * coord.y)) / coord.z);
-
-	return vec3(r, theta, phi);
-}
-
-vec3 SphericalToCartesian(vec3 coord)
-{
-	float r = coord.x;
-	float theta = coord.y;
-	float phi = coord.z;
-
-	float x = r * sin(phi) * cos(theta);
-	float y = r * sin(phi) * sin(theta);
-	float z = r * cos(phi);
-
-	return vec3(x, y, z);
-}
-
 vec3 GenerateSurfaceNormal(vec3 a, vec3 b, vec3 c)
 {
 	vec3 ba = b - a;
@@ -210,8 +188,6 @@ void main ()
 
 	OUT.terrainNoise = sNoise(vec2(combinedPos.x + combinedPos.y, combinedPos.z));
 
-
-	
 
 	//add noise to original point
 	combinedPos = normaliseVector3(combinedPos);
